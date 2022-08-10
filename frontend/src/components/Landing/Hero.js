@@ -2,6 +2,9 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import withRouter from '../UI/withRouter';
+
+const ButtonRouter = withRouter(Button);
 
 export default function Hero() {
   return (
@@ -41,13 +44,14 @@ export default function Hero() {
             aspernatur debitis voluptatibus eaque obcaecati molestiae, ipsa
             assumenda autem deserunt consequatur, voluptas sed quam incidunt.
           </Typography>
-          <Button
+          <ButtonRouter
             variant="contained"
             color="primary"
+            linkPath="/sign-up"
             sx={{ width: '200px', fontSize: '16px' }}
           >
             Sign Up
-          </Button>
+          </ButtonRouter>
         </Grid>
         <Grid item xs={12} md={5}>
           <img src="/images/hero-image.jpg" alt="productivity" width="100%" />

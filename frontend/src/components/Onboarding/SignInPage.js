@@ -13,8 +13,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
+import withRouter from '../UI/withRouter';
 
 const theme = createTheme();
+
+const LinkRouter = withRouter(Link);
 
 export default function SignIn() {
   const handleSubmit = (event) => {
@@ -84,14 +87,14 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <LinkRouter linkPath="#" variant="body2">
                   Forgot password?
-                </Link>
+                </LinkRouter>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <LinkRouter linkPath="/sign-up" variant="body2">
                   {"Don't have an account? Sign Up"}
-                </Link>
+                </LinkRouter>
               </Grid>
             </Grid>
           </Box>

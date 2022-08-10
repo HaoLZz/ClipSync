@@ -12,9 +12,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import withRouter from './withRouter';
 
 const drawerWidth = 240;
 const navItems = ['Home', 'Features', 'Contact Us', 'Sign in'];
+const navUrls = ['/', '/#features', '/#contact-us', '/sign-in'];
+
+const ListItemRouter = withRouter(ListItem);
+const ButtonRouter = withRouter(Button);
 
 export default function Header(props) {
   const { window } = props;
@@ -31,12 +36,12 @@ export default function Header(props) {
       </Typography>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
+        {navItems.map((item, i) => (
+          <ListItemRouter key={item} linkPath={navUrls[i]} disablePadding>
             <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
+              <ListItemText primary={item} sx={{ color: '#666' }} />
             </ListItemButton>
-          </ListItem>
+          </ListItemRouter>
         ))}
       </List>
     </Box>
@@ -70,10 +75,14 @@ export default function Header(props) {
             ClipSync
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: '#fff' }}>
+            {navItems.map((item, i) => (
+              <ButtonRouter
+                key={item}
+                linkPath={navUrls[i]}
+                sx={{ color: '#fff' }}
+              >
                 {item}
-              </Button>
+              </ButtonRouter>
             ))}
           </Box>
         </Toolbar>

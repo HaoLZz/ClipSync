@@ -1,5 +1,8 @@
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import withRouter from './withRouter';
+
+const LinkRouter = withRouter(Link);
 
 export default function Footer(props) {
   return (
@@ -10,9 +13,9 @@ export default function Footer(props) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="#">
+      <LinkRouter color="inherit" linkPath="/">
         ClipSync
-      </Link>{' '}
+      </LinkRouter>{' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>

@@ -13,8 +13,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
+import withRouter from '../UI/withRouter';
 
 const theme = createTheme();
+
+const LinkRouter = withRouter(Link);
 
 export default function SignUpPage() {
   const handleSubmit = (event) => {
@@ -112,9 +115,9 @@ export default function SignUpPage() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <LinkRouter linkPath="/sign-in" variant="body2">
                   Already have an account? Sign in
-                </Link>
+                </LinkRouter>
               </Grid>
             </Grid>
           </Box>
