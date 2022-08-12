@@ -1,6 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PrimarySearchAppBar from './components/AppBar';
+import PrimaryAppBar from './components/App/PrimaryAppBar';
 import { UserProvider } from './components/Users/UserContext';
 import SignUpPage from './components/Onboarding/SignUpPage';
 import SignIn from './components/Onboarding/SignInPage';
@@ -16,7 +16,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/app" element={<PrimarySearchAppBar />} />
+            <Route path="/app" element={<PrimaryAppBar />} />
           </Routes>
         </div>
       </Router>
