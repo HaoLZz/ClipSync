@@ -81,7 +81,6 @@ export default function ContactForm() {
           aria-label="minimum height"
           minRows={6}
           placeholder="Enter a message"
-          textAlign="center"
           spellCheck
           fullWidth
           sx={{
