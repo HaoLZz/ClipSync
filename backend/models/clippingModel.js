@@ -27,12 +27,6 @@ const LinkMsg = msgArray.discriminator('Link', linkMsgSchema);
 const FileMsg = msgArray.discriminator('File', fileMsgSchema);
 const ImageMsg = msgArray.discriminator('Image', imageMsgSchema);
 
-// const sampleClippings = { user: 'testUser', ...clippings };
-
 const Clipping = mongoose.model('Clipping', clippingSchema);
-
-// const doc = Clipping.create(clippings);
-
-// console.log(doc);
 
 export default Clipping;

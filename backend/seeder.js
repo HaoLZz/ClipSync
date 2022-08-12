@@ -12,12 +12,14 @@ dotenv.config();
 const importData = async () => {
   try {
     await User.deleteMany();
-    // await Clipping.deleteMany();
+    await Clipping.deleteMany();
 
     const createdUsers = await User.insertMany(users);
     const testUser = createdUsers[0]._id;
-    // const sampleClippings = { user: testUser, ...clippings };
-    // await Clipping.create(sampleClippings);
+    // Link sampleClippings to a testUser
+    const sampleClippings = { user: testUser, ...clippings };
+    Clipping.create(sampleClippings);
+
     console.log('Data Imported!'.green.inverse);
   } catch (error) {
     console.error(`${error.message}`.red.inverse);
