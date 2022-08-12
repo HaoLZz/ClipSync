@@ -1,10 +1,10 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PrimaryAppBar from './components/App/PrimaryAppBar';
 import { UserProvider } from './components/Users/UserContext';
 import SignUpPage from './components/Onboarding/SignUpPage';
 import SignIn from './components/Onboarding/SignInPage';
 import LandingPage from './components/Landing/LandingPage';
+import AppPage from './components/App/AppPage';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/app" element={<PrimaryAppBar />} />
+            <Route path="/app" element={<AppPage />} />
           </Routes>
         </div>
       </Router>

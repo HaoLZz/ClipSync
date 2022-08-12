@@ -173,7 +173,7 @@ export default function PrimaryAppBar(props) {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }}
           >
             ClipSync
           </Typography>
