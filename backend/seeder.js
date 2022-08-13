@@ -17,8 +17,10 @@ const importData = async () => {
     const createdUsers = await User.insertMany(users);
     const testUser = createdUsers[0]._id;
     // Link sampleClippings to a testUser
-    const sampleClippings = { user: testUser, ...clippings };
-    Clipping.create(sampleClippings);
+    const sampleClippings = clippings.map((clipping) => {
+      return { ...clipping, user: testUser };
+    });
+    await Clipping.create(sampleClippings);
 
     console.log('Data Imported!'.green.inverse);
   } catch (error) {

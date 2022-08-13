@@ -1,12 +1,10 @@
 import mongoose from 'mongoose';
-import clippings from '../data/clippings.js';
 import {
-  msgSchema,
-  textMsgSchema,
-  linkMsgSchema,
-  imageMsgSchema,
-  fileMsgSchema,
-} from './messageModel.js';
+  textSchema,
+  linkSchema,
+  imageSchema,
+  fileSchema,
+} from './typeSchema.js';
 
 export const clippingSchema = mongoose.Schema(
   {
@@ -15,17 +13,23 @@ export const clippingSchema = mongoose.Schema(
       required: [true, 'user id is missing'],
       ref: 'User',
     },
-    messages: [msgSchema],
+    origin: {
+      type: String,
+      required: [true, 'origin is missing'],
+    },
+    isPinned: {
+      type: Boolean,
+      default: false,
+      required: [true, 'isPinned is missing'],
+    },
   },
-  { timestamps: true },
+  { timestamps: true, discriminatorKey: 'type' },
 );
 
-const msgArray = clippingSchema.path('messages');
-
-const TextMsg = msgArray.discriminator('Text', textMsgSchema);
-const LinkMsg = msgArray.discriminator('Link', linkMsgSchema);
-const FileMsg = msgArray.discriminator('File', fileMsgSchema);
-const ImageMsg = msgArray.discriminator('Image', imageMsgSchema);
+const Text = clippingSchema.discriminator('Text', textSchema);
+const Link = clippingSchema.discriminator('Link', linkSchema);
+const File = clippingSchema.discriminator('File', fileSchema);
+const Image = clippingSchema.discriminator('Image', imageSchema);
 
 const Clipping = mongoose.model('Clipping', clippingSchema);
 
