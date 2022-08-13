@@ -15,8 +15,8 @@ export default function Tabs({ children, tabLabels }) {
   };
 
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('sm'));
-  const tabListStyle = matches ? { center: true } : { variant: 'fullWidth' };
+  const matches = useMediaQuery(theme.breakpoints.up('md'));
+  const tabListStyle = matches ? { centered: true } : { variant: 'fullWidth' };
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
