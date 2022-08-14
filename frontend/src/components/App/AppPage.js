@@ -19,7 +19,7 @@ const clippingsSample = [
     isPinned: true,
   },
   {
-    origin: 'desktop',
+    origin: 'tablet',
     type: 'Link',
     content:
       'https://www.randstad.ca/jobs/javascript-developer-alberta-remote-permanent_calgary_39351251/',
@@ -37,7 +37,7 @@ const clippingsSample = [
     isPinned: true,
   },
   {
-    origin: 'desktop',
+    origin: 'phone',
     type: 'File',
     content: 'file content',
     format: 'pdf',
