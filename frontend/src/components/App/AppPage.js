@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
 import ClippingsList from './ClippingsList';
+import usePermissions from './usePermissions';
 
 const clippingsSample = [
   {
@@ -53,6 +54,9 @@ export default function AppPage() {
   const pinnedClippings = clippingsSample.filter(
     (clipping) => clipping.isPinned,
   );
+
+  const { permissions, error } = usePermissions();
+  console.log(permissions);
 
   return (
     <>
