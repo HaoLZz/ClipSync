@@ -60,7 +60,6 @@ export default function ClippingDetails({ clipping }) {
           sx={{
             marginBottom: '15px',
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
@@ -68,6 +67,7 @@ export default function ClippingDetails({ clipping }) {
             src="https://placeholder.pics/svg/48x48"
             alt="link thumbnail"
             variant="square"
+            sx={{ marginRight: '5%' }}
           />
           <Typography variant="body1" component="p" gutterBottom>
             {content}
@@ -165,9 +165,9 @@ export default function ClippingDetails({ clipping }) {
             src="https://placeholder.pics/svg/48x48/FFB01E-FF6DC4"
             alt="file thumbnail"
             variant="square"
-            sx={{ flex: 1 }}
+            sx={{ marginRight: '5%' }}
           />
-          <Box sx={{ flex: 8 }} textAlign="center">
+          <Box>
             <Typography variant="subtitle1" component="p">
               {content}
             </Typography>

@@ -33,7 +33,7 @@ const clippingsSample = [
   {
     origin: 'desktop',
     type: 'Image',
-    content: 'file content',
+    content: 'Family photo',
     format: 'png',
     resolution: '600x480',
     size: '200kb',
@@ -43,7 +43,7 @@ const clippingsSample = [
   {
     origin: 'phone',
     type: 'File',
-    content: 'file content',
+    content: 'How to become a better developer',
     format: 'pdf',
     size: '1500kb',
     isPinned: false,
