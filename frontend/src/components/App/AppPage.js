@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import Collapse from '@mui/material/Collapse';
 import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
 import AlertDialog from './AlertDialog';
+import Message from '../UI/Message';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
 
@@ -57,9 +59,9 @@ export default function AppPage() {
   );
 
   const { permissions, error } = usePermissions();
-  console.log(permissions);
   const [userAgree, setUserAgree] = useState('prompt');
   const [openAlert, setOpenAlert] = useState(true);
+  const [openMessage, setOpenMessage] = useState(true);
 
   return (
     <>
@@ -71,6 +73,15 @@ export default function AppPage() {
         />
       )}
       <PrimaryAppBar />
+      {error && (
+        <Collapse in={openMessage}>
+          <Message
+            severity="error"
+            title="Error"
+            handleClose={() => setOpenMessage(false)}
+          >{`${error.name}: ${error.message}`}</Message>
+        </Collapse>
+      )}
       <Tabs tabLabels={tabLabels}>
         <ClippingsList clippings={clippings} />
         <ClippingsList clippings={pinnedClippings} />
