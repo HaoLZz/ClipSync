@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
+import AlertDialog from './AlertDialog';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
 
@@ -57,9 +58,18 @@ export default function AppPage() {
 
   const { permissions, error } = usePermissions();
   console.log(permissions);
+  const [userAgree, setUserAgree] = useState('prompt');
+  const [openAlert, setOpenAlert] = useState(true);
 
   return (
     <>
+      {userAgree === 'prompt' && (
+        <AlertDialog
+          open={openAlert}
+          setOpen={setOpenAlert}
+          setAgree={setUserAgree}
+        />
+      )}
       <PrimaryAppBar />
       <Tabs tabLabels={tabLabels}>
         <ClippingsList clippings={clippings} />
