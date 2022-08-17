@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -11,22 +11,35 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
 import withRouter from '../UI/withRouter';
+import { useAuth } from '../Users/AuthContext';
+import { UserSetContext } from '../Users/UserContext';
 
 const theme = createTheme();
 
 const LinkRouter = withRouter(Link);
 
 export default function SignIn() {
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { getAuthStatus, signin } = useAuth();
+  const setUser = useContext(UserSetContext);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const { userInfo, error } = await signin(email, password);
+    if (error) {
+      console.error(error);
+    }
+
+    if (getAuthStatus() && userInfo) {
+      setUser(userInfo);
+      setEmail('');
+      setPassword('');
+    }
   };
 
   return (
@@ -60,6 +73,8 @@ export default function SignIn() {
               id="email"
               label="Email Address"
               name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               autoFocus
             />
@@ -71,6 +86,8 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             <FormControlLabel
