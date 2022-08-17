@@ -6,6 +6,7 @@ import SignUpPage from './components/Onboarding/SignUpPage';
 import SignIn from './components/Onboarding/SignInPage';
 import LandingPage from './components/Landing/LandingPage';
 import AppPage from './components/App/AppPage';
+import RequireAuth from './components/Users/RequireAuth';
 
 function App() {
   return (
@@ -18,7 +19,14 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/sign-up" element={<SignUpPage />} />
               <Route path="/sign-in" element={<SignIn />} />
-              <Route path="/app" element={<AppPage />} />
+              <Route
+                path="/app"
+                element={
+                  <RequireAuth>
+                    <AppPage />
+                  </RequireAuth>
+                }
+              />
             </Routes>
           </div>
         </Router>
