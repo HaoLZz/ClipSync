@@ -6,6 +6,8 @@ import AlertDialog from './AlertDialog';
 import Message from '../UI/Message';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
+import { useUser } from '../Users/UserContext';
+import { useSocket } from '../../utils/SocketContext';
 
 const clippingsSample = [
   {
@@ -64,6 +66,9 @@ export default function AppPage() {
   const [openMessage, setOpenMessage] = useState(true);
 
   const [latestText, setLatestText] = useState('');
+
+  const [user, setUser] = useUser();
+  const { data, error, status } = useSocket(user._id);
 
   return (
     <>
