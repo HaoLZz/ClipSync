@@ -83,7 +83,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
     user.password = password || user.password;
-    user.grantPermissions = grantPermissions || user.grantPermissions;
+    user.grantPermissions =
+      grantPermissions === undefined ? user.grantPermissions : grantPermissions;
 
     const updatedUser = await user.save();
 
@@ -91,7 +92,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
-      grantPermissions: user.grantPermissions,
+      grantPermissions: updatedUser.grantPermissions,
       token: generateToken(updatedUser._id),
     });
   } else {
