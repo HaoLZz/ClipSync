@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -25,8 +26,21 @@ const LinkRouter = withRouter(Link);
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const { getAuthStatus, signin } = useAuth();
   const setUser = useContext(UserSetContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  // the page users tried to visit before they were redirected to login
+  const from = location.state?.from?.pathname || '/';
+
+  useEffect(() => {
+    if (getAuthStatus()) {
+      // if users were already logined, redirect back to where they came from
+      navigate(from, { replace: true });
+    }
+  }, [from, getAuthStatus, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,6 +53,8 @@ export default function SignIn() {
       setUser(userInfo);
       setEmail('');
       setPassword('');
+      // redirect uesrs to main app after login
+      navigate('/app', { replace: true });
     }
   };
 

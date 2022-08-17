@@ -15,8 +15,8 @@ import Button from '@mui/material/Button';
 import withRouter from './withRouter';
 
 const drawerWidth = 240;
-const navItems = ['Home', 'Features', 'Contact Us', 'Sign in'];
-const navUrls = ['/', '/#features', '/#contact-us', '/sign-in'];
+const navItems = ['Home', 'Features', 'Contact Us', 'App', 'Sign in'];
+const navUrls = ['/', '/#features', '/#contact-us', '/app', '/sign-in'];
 
 const ListItemRouter = withRouter(ListItem);
 const ButtonRouter = withRouter(Button);
