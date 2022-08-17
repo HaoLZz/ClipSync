@@ -22,7 +22,7 @@ import withRouter from '../UI/withRouter';
 
 const drawerWidth = 240;
 const navItems = ['Home', 'Support', 'Log out'];
-const navUrls = ['/', '/support', '/'];
+const navUrls = ['/', '/support', '/logout'];
 
 const ListItemRouter = withRouter(ListItem);
 

@@ -7,6 +7,7 @@ import SignIn from './components/Onboarding/SignInPage';
 import LandingPage from './components/Landing/LandingPage';
 import AppPage from './components/App/AppPage';
 import RequireAuth from './components/Users/RequireAuth';
+import UserLogout from './components/Users/UserLogout';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route path="/logout" element={<UserLogout />} />
             </Routes>
           </div>
         </Router>
