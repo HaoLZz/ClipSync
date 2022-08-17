@@ -14,6 +14,7 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      grantPermissions: user.grantPermissions,
       token: generateToken(user._id),
     });
   } else {
@@ -44,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      message: 'Sign-up is successful',
     });
   } else {
     res.status(400);
@@ -63,6 +64,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      grantPermissions: user.grantPermissions,
     });
   } else {
     res.status(401);
@@ -77,10 +79,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    const { name, email, password } = req.body;
+    const { name, email, password, grantPermissions } = req.body;
     user.name = name || user.name;
     user.email = email || user.email;
     user.password = password || user.password;
+    user.grantPermissions = grantPermissions || user.grantPermissions;
 
     const updatedUser = await user.save();
 
@@ -88,6 +91,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      grantPermissions: user.grantPermissions,
       token: generateToken(updatedUser._id),
     });
   } else {
