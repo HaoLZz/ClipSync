@@ -58,10 +58,12 @@ export default function AppPage() {
     (clipping) => clipping.isPinned,
   );
 
-  const { permissions, error } = usePermissions();
+  const { permissions, error: permissionError } = usePermissions();
   const [userAgree, setUserAgree] = useState('prompt');
   const [openAlert, setOpenAlert] = useState(true);
   const [openMessage, setOpenMessage] = useState(true);
+
+  const [latestText, setLatestText] = useState('');
 
   return (
     <>
@@ -73,18 +75,24 @@ export default function AppPage() {
         />
       )}
       <PrimaryAppBar />
-      {error && (
+      {permissionError && (
         <Collapse in={openMessage}>
           <Message
             severity="error"
             title="Error"
             handleClose={() => setOpenMessage(false)}
-          >{`${error.name}: ${error.message}`}</Message>
+          >{`${permissionError.name}: ${permissionError.message}`}</Message>
         </Collapse>
       )}
       <Tabs tabLabels={tabLabels}>
-        <ClippingsList clippings={clippings} />
-        <ClippingsList clippings={pinnedClippings} />
+        <ClippingsList
+          clippings={clippings}
+          setClippings={setClippings}
+          latestText={latestText}
+          setLatestText={setLatestText}
+          showActionButton={true}
+        />
+        <ClippingsList clippings={pinnedClippings} showActionButton={false} />
       </Tabs>
     </>
   );
