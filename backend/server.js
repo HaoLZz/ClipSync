@@ -1,5 +1,6 @@
 import express from 'express';
 import https from 'https';
+import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,6 +25,8 @@ const server = https.createServer(
   app,
 );
 
+const io = new Server(server);
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -34,6 +37,17 @@ app.use('/api/users', userRoutes);
 app.use(notFound);
 
 app.use(errorHandler);
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 const MODE = process.env.NODE_ENV;
