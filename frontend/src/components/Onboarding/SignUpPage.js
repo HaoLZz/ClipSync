@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -14,19 +15,34 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
 import withRouter from '../UI/withRouter';
+import apiRequest from '../../utils/api';
 
 const theme = createTheme();
 
 const LinkRouter = withRouter(Link);
 
 export default function SignUpPage() {
-  const handleSubmit = (event) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    try {
+      const userInfo = await apiRequest('api/users', 'POST', {
+        name: `${firstName} ${lastName}`,
+        email,
+        password,
+      });
+      if (userInfo && userInfo._id) {
+        // upon successful registration, redirect to signin page
+        navigate('/sign-in', { replace: true });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -62,6 +78,8 @@ export default function SignUpPage() {
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   autoFocus
                 />
               </Grid>
@@ -72,6 +90,8 @@ export default function SignUpPage() {
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   autoComplete="family-name"
                 />
               </Grid>
@@ -82,6 +102,8 @@ export default function SignUpPage() {
                   id="email"
                   label="Email Address"
                   name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
                 />
               </Grid>
@@ -93,6 +115,8 @@ export default function SignUpPage() {
                   label="Password"
                   type="password"
                   id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="new-password"
                 />
               </Grid>
