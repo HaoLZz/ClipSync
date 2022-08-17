@@ -1,6 +1,11 @@
 import axios from 'axios';
 
 class AuthManager {
+  constructor() {
+    this.getAuthStatus = this.getAuthStatus.bind(this);
+    this.signin = this.signin.bind(this);
+    this.signout = this.signout.bind(this);
+  }
   _isAuthenticated = false;
   async signin(email, password) {
     const config = {

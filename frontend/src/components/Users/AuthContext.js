@@ -26,5 +26,5 @@ export function useAuth() {
     throw new Error('The AuthProvider is missing!');
   }
 
-  return [getAuthStatus, signin, signout];
+  return { getAuthStatus, signin, signout };
 }
