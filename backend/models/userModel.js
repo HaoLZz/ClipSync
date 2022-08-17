@@ -16,6 +16,10 @@ const userSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    grantPermissions: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
