@@ -4,7 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import SyncIcon from '@mui/icons-material/Sync';
 import Box from '@mui/material/Box';
 import ClippingDetails from './ClippingDetails';
-import { getClipboardText, getClipboardContents } from '../../utils/clipboard';
+import { getClipboardText } from '../../utils/clipboard';
 
 export default function ClippingsList({
   clippings,

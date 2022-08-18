@@ -9,55 +9,13 @@ import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
 import { useUser } from '../Users/UserContext';
 
-const clippingsSample = [
-  {
-    origin: 'desktop',
-    type: 'Text',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit,elit Lorem ipsum dolorelit Lorem ipsum dolor',
-    isPinned: false,
-  },
-  {
-    origin: 'phone',
-    type: 'Text',
-    content:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit.Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elitLorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit',
-    isPinned: true,
-  },
-  {
-    origin: 'tablet',
-    type: 'Link',
-    content:
-      'https://www.randstad.ca/jobs/javascript-developer-alberta-remote-permanent_calgary_39351251/',
-    thumbnail: 'placeholder.png',
-    isPinned: false,
-  },
-  {
-    origin: 'desktop',
-    type: 'Image',
-    content: 'Family photo',
-    format: 'png',
-    resolution: '600x480',
-    size: '200kb',
-    thumbnail: 'placeholder.png',
-    isPinned: true,
-  },
-  {
-    origin: 'phone',
-    type: 'File',
-    content: 'How to become a better developer',
-    format: 'pdf',
-    size: '1500kb',
-    isPinned: false,
-  },
-];
 const socket = io('wss://localhost:5000');
 
 export default function AppPage() {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastMessage, setLastMessage] = useState(null);
+  const [socketError, setSocketError] = useState(null);
 
-  const [clippings, setClippings] = useState(clippingsSample);
+  const [clippings, setClippings] = useState([]);
 
   const [user, setUser] = useUser();
 
@@ -70,29 +28,62 @@ export default function AppPage() {
 
   useEffect(() => {
     socket.on('connect', () => {
+      console.log(socket.id);
       setIsConnected(true);
     });
+
+    if (isConnected) {
+      socket.emit('User_Connect', user._id);
+      socket.emit('clipping:list', user._id, (res) => {
+        if (res.status === 'successful') {
+          setClippings(res.data.reverse());
+        } else {
+          console.error(res.data);
+          setSocketError('clipping:list failed');
+        }
+      });
+    }
 
     socket.on('disconnect', () => {
       setIsConnected(false);
     });
 
-    socket.on('message', (msg) => {
-      setLastMessage({ msg, timeStamp: new Date().toISOString() });
+    socket.on('clipping:created', (newClipping) => {
+      setClippings((clippings) => [newClipping, ...clippings]);
     });
 
+    socket.on('clipping:updated', (updateClipping) => {
+      setClippings((clippings) =>
+        clippings.map((clipping) =>
+          clipping._id === updateClipping._id ? updateClipping : clipping,
+        ),
+      );
+    });
+
+    socket.on('clipping:deleted', (deletedClippingId) => {
+      setClippings((clippings) => {
+        const clippingIndex = clippings.findIndex(
+          (clipping) => clipping._id === deletedClippingId,
+        );
+
+        return [
+          ...clippings.slice(0, clippingIndex),
+          ...clippings.slice(clippingIndex + 1),
+        ];
+      });
+    });
     return () => {
       socket.off('connect');
       socket.off('disconnect');
-      socket.off('message');
+      socket.off('clipping:created');
+      socket.off('clipping:updated');
+      socket.off('clipping:deleted');
     };
-  }, []);
+  }, [user._id, isConnected]);
 
   const tabLabels = ['Clipboard', 'Pinned'];
 
-  const pinnedClippings = clippingsSample.filter(
-    (clipping) => clipping.isPinned,
-  );
+  const pinnedClippings = clippings.filter((clipping) => clipping.isPinned);
 
   return (
     <>

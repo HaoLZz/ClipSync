@@ -52,7 +52,7 @@ export default function ClippingDetails({ clipping }) {
     );
   };
 
-  const Link = ({ content, isPinned }) => {
+  const Link = ({ url, isPinned }) => {
     return (
       <>
         <Box
@@ -70,7 +70,7 @@ export default function ClippingDetails({ clipping }) {
             sx={{ marginRight: '5%' }}
           />
           <Typography variant="body1" component="p" gutterBottom>
-            {content}
+            {url}
           </Typography>
         </Box>
         <Box
