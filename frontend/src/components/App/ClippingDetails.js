@@ -52,7 +52,7 @@ export default function ClippingDetails({ clipping }) {
     );
   };
 
-  const Link = ({ url, isPinned }) => {
+  const Link = ({ url, isPinned, thumbnail }) => {
     return (
       <>
         <Box
@@ -64,7 +64,7 @@ export default function ClippingDetails({ clipping }) {
           }}
         >
           <Avatar
-            src="https://placeholder.pics/svg/48x48"
+            src={thumbnail}
             alt="link thumbnail"
             variant="square"
             sx={{ marginRight: '5%' }}

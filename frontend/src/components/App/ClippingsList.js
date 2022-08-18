@@ -5,6 +5,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import Box from '@mui/material/Box';
 import ClippingDetails from './ClippingDetails';
 import { getClipboardText } from '../../utils/clipboard';
+import { validURL } from '../../utils/utils';
 
 export default function ClippingsList({
   clippings,
@@ -25,15 +26,32 @@ export default function ClippingsList({
       text.trim().length === 0 ||
       (latestText && text.trim() === latestText.trim())
     ) {
+      // if copied text is the same as before
       setLoading(false);
       return;
     }
     setLatestText(text);
-    console.log('new text content');
-    setClippings((clippings) => [
-      { origin: 'desktop', type: 'Text', content: text, isPinned: false },
-      ...clippings,
-    ]);
+    const contentType = validURL(text) ? 'Link' : 'Text';
+    console.log(`new ${contentType} content`);
+    if (contentType === 'Text') {
+      setClippings((clippings) => [
+        { origin: 'desktop', type: 'Text', content: text, isPinned: false },
+        ...clippings,
+      ]);
+    }
+    if (contentType === 'Link') {
+      setClippings((clippings) => [
+        {
+          origin: 'desktop',
+          type: 'Link',
+          url: text,
+          isPinned: false,
+          thumbnail: `https://www.google.com/s2/favicons?sz=64&domain_url=${text}`,
+        },
+        ...clippings,
+      ]);
+    }
+
     // setLatestImage(imageBlob);
     setLoading(false);
   };
