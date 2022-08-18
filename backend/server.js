@@ -10,6 +10,13 @@ import connectDB from './config/db.js';
 import colors from 'colors';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import {
+  createClipping,
+  readClipping,
+  updateClipping,
+  deleteClipping,
+  listClipping,
+} from './controllers/clippingController.js';
 
 config();
 
@@ -45,20 +52,21 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log(`Socket:${socket.id} connected`);
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    console.log(`Socket:${socket.id} disconnected`);
   });
 
   socket.on('User_Connect', (userId) =>
     console.log(`User connection: ${userId}`),
   );
 
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
+  socket.on('clipping:create', createClipping);
+  socket.on('clipping:read', readClipping);
+  socket.on('clipping:update', updateClipping);
+  socket.on('clipping:delete', deleteClipping);
+  socket.on('clipping:list', listClipping);
 });
 
 const PORT = process.env.PORT || 5000;
