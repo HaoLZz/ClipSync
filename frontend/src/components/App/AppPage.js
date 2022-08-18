@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import io from 'socket.io-client';
 import Collapse from '@mui/material/Collapse';
 import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
@@ -6,6 +7,7 @@ import AlertDialog from './AlertDialog';
 import Message from '../UI/Message';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
+import { useUser } from '../Users/UserContext';
 
 const clippingsSample = [
   {
@@ -49,21 +51,48 @@ const clippingsSample = [
     isPinned: false,
   },
 ];
+const socket = io('wss://localhost:5000');
 
 export default function AppPage() {
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [lastMessage, setLastMessage] = useState(null);
+
   const [clippings, setClippings] = useState(clippingsSample);
-  const tabLabels = ['Clipboard', 'Pinned'];
 
-  const pinnedClippings = clippingsSample.filter(
-    (clipping) => clipping.isPinned,
-  );
+  const [user, setUser] = useUser();
 
-  const { permissions, error: permissionError } = usePermissions();
+  const { error: permissionError } = usePermissions();
   const [userAgree, setUserAgree] = useState('prompt');
   const [openAlert, setOpenAlert] = useState(true);
   const [openMessage, setOpenMessage] = useState(true);
 
   const [latestText, setLatestText] = useState('');
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
+
+    socket.on('message', (msg) => {
+      setLastMessage({ msg, timeStamp: new Date().toISOString() });
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('message');
+    };
+  }, []);
+
+  const tabLabels = ['Clipboard', 'Pinned'];
+
+  const pinnedClippings = clippingsSample.filter(
+    (clipping) => clipping.isPinned,
+  );
 
   return (
     <>
