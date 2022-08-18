@@ -11,7 +11,7 @@ export default function Features() {
       id: 1,
       icon: <CloudSyncOutlinedIcon sx={{ fontSize: 100 }} color="primary" />,
       content:
-        'Synchronizing your clipboards across difference devices with ease ',
+        'Synchronizing your clipboards across multiple devices with ease ',
     },
     {
       id: 2,
