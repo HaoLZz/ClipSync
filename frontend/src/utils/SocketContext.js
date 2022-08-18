@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 const SocketContext = createContext();
 
 export function SocketProvider({ children }) {
-  const socket = io();
+  const socket = io('wss://localhost:5000');
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
@@ -18,7 +18,7 @@ export function useSocket(userId) {
   const socket = useContext(SocketContext);
 
   useEffect(() => {
-    if (!userId) {
+    if (userId) {
       socket.on('connect', () => {
         setStatus('connected');
       });
@@ -32,11 +32,14 @@ export function useSocket(userId) {
         console.error(error);
         setError(error);
       });
+      socket.on('disconnect', () => {
+        setStatus('disconnected');
+      });
     }
-    return () => {
-      socket.disconnect();
-      setStatus('disconnected');
-    };
+    // return () => {
+    //   socket.disconnect();
+    //   setStatus('disconnected');
+    // };
   }, [socket, userId]);
 
   return { data, error, status };
