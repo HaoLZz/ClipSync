@@ -17,7 +17,7 @@ const createClipping = async function (userId, clippingToCreate, callback) {
     const savedClipping = await Clipping.create({ ...clippingToCreate, user });
 
     if (savedClipping) {
-      callback({ status: 'successful', data: savedClipping._id });
+      callback({ status: 'successful', data: savedClipping });
       socket.broadcast.emit('clipping:created', savedClipping);
     } else {
       throw new Error('Saving clipping to database failed');
@@ -55,10 +55,10 @@ const updateClipping = async function (clippingId, update, callback) {
     const clipping = await Clipping.findById(clippingId);
 
     if (clipping) {
-      clipping.isPinned = update.isPinned || clipping.isPinned;
+      clipping.isPinned = update.isPinned;
       const updatedClipping = await clipping.save();
 
-      callback({ status: 'successful', data: updatedClipping._id });
+      callback({ status: 'successful', data: updatedClipping });
       socket.broadcast.emit('clipping:updated', updatedClipping);
     } else {
       throw new Error(`Clipping with id${clippingId} not found`);
@@ -68,8 +68,8 @@ const updateClipping = async function (clippingId, update, callback) {
   }
 };
 
-// @desc  Update a clipping
-// @event clipping:update
+// @desc  Delete a clipping
+// @event clipping:delete
 // @access Private
 
 const deleteClipping = async function (clippingId, callback) {
