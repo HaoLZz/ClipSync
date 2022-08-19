@@ -55,6 +55,28 @@ export default function ClippingDetails({
     );
   };
 
+  const handleDelete = (clippingId) => {
+    const callback = (res) => {
+      if (res.status === 'successful') {
+        setClippings((clippings) => {
+          const clippingIndex = clippings.findIndex(
+            (clipping) => clipping._id === res.data,
+          );
+
+          return [
+            ...clippings.slice(0, clippingIndex),
+            ...clippings.slice(clippingIndex + 1),
+          ];
+        });
+      } else {
+        console.error('clipping:delete failed');
+        setSocketError(res.data);
+      }
+    };
+
+    socket.emit('clipping:delete', clippingId, callback);
+  };
+
   const Text = ({ content, isPinned, _id }) => {
     return (
       <>
@@ -73,7 +95,7 @@ export default function ClippingDetails({
             <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDelete(_id)}>
               <DeleteOutlinedIcon />
             </IconButton>
           </ButtonGroup>
@@ -115,7 +137,7 @@ export default function ClippingDetails({
             <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDelete(_id)}>
               <DeleteOutlinedIcon />
             </IconButton>
           </ButtonGroup>
@@ -171,7 +193,7 @@ export default function ClippingDetails({
             <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDelete(_id)}>
               <DeleteOutlinedIcon />
             </IconButton>
           </ButtonGroup>
@@ -221,7 +243,7 @@ export default function ClippingDetails({
             <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => handleDelete(_id)}>
               <DeleteOutlinedIcon />
             </IconButton>
           </ButtonGroup>
