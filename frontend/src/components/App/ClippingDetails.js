@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
@@ -14,7 +14,15 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
-export default function ClippingDetails({ clipping }) {
+import SocketContext from './SocketContext';
+
+export default function ClippingDetails({
+  clipping,
+  setClippings,
+  setSocketError,
+}) {
+  const socket = useContext(SocketContext);
+
   const originList = ['desktop', 'tablet', 'phone'];
   const iconList = [
     <DesktopWindowsOutlinedIcon />,
@@ -25,7 +33,29 @@ export default function ClippingDetails({ clipping }) {
 
   const originIcon = iconList[index];
 
-  const Text = ({ content, isPinned }) => {
+  const togglePinned = (clippingId, isPinned) => {
+    const callback = (res) => {
+      if (res.status === 'successful') {
+        setClippings((clippings) =>
+          clippings.map((clipping) =>
+            clipping._id === res.data?._id ? res.data : clipping,
+          ),
+        );
+      } else {
+        console.error('clipping:update failed');
+        setSocketError(res.data);
+      }
+    };
+
+    socket.emit(
+      'clipping:update',
+      clippingId,
+      { isPinned: !isPinned },
+      callback,
+    );
+  };
+
+  const Text = ({ content, isPinned, _id }) => {
     return (
       <>
         <Typography variant="body1" component="p" gutterBottom>
@@ -40,7 +70,7 @@ export default function ClippingDetails({ clipping }) {
             <IconButton>
               <ContentCopyOutlinedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
             <IconButton>
@@ -52,7 +82,7 @@ export default function ClippingDetails({ clipping }) {
     );
   };
 
-  const Link = ({ url, isPinned, thumbnail }) => {
+  const Link = ({ url, isPinned, thumbnail, _id }) => {
     return (
       <>
         <Box
@@ -82,7 +112,7 @@ export default function ClippingDetails({ clipping }) {
             <IconButton>
               <ContentCopyOutlinedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
             <IconButton>
@@ -94,7 +124,7 @@ export default function ClippingDetails({ clipping }) {
     );
   };
 
-  const Image = ({ format, content, isPinned, resolution, size }) => {
+  const Image = ({ _id, format, content, isPinned, resolution, size }) => {
     return (
       <>
         <Box
@@ -138,7 +168,7 @@ export default function ClippingDetails({ clipping }) {
             <IconButton>
               <DownloadOutlinedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
             <IconButton>
@@ -150,7 +180,7 @@ export default function ClippingDetails({ clipping }) {
     );
   };
 
-  const File = ({ format, content, isPinned, size }) => {
+  const File = ({ _id, format, content, isPinned, size }) => {
     return (
       <>
         <Box
@@ -188,7 +218,7 @@ export default function ClippingDetails({ clipping }) {
             <IconButton>
               <DownloadOutlinedIcon />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => togglePinned(_id, isPinned)}>
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
             <IconButton>

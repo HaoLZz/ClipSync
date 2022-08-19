@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Container from '@mui/material/Container';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SyncIcon from '@mui/icons-material/Sync';
@@ -6,14 +6,19 @@ import Box from '@mui/material/Box';
 import ClippingDetails from './ClippingDetails';
 import { getClipboardText } from '../../utils/clipboard';
 import { validURL } from '../../utils/utils';
+import SocketContext from './SocketContext';
+import UserContext from '../Users/UserContext';
 
 export default function ClippingsList({
   clippings,
   setClippings,
   latestText,
   setLatestText,
+  setSocketError,
   showActionButton,
 }) {
+  const socket = useContext(SocketContext);
+  const user = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   // const [latestImage, setLatestImage] = useState(null);
 
@@ -33,28 +38,35 @@ export default function ClippingsList({
     setLatestText(text);
     const contentType = validURL(text) ? 'Link' : 'Text';
     console.log(`new ${contentType} content`);
-    if (contentType === 'Text') {
-      setClippings((clippings) => [
-        { origin: 'desktop', type: 'Text', content: text, isPinned: false },
-        ...clippings,
-      ]);
-    }
-    if (contentType === 'Link') {
-      setClippings((clippings) => [
-        {
-          origin: 'desktop',
-          type: 'Link',
-          url: text,
-          isPinned: false,
-          thumbnail: `https://www.google.com/s2/favicons?sz=64&domain_url=${text}`,
-        },
-        ...clippings,
-      ]);
-    }
+
+    const callback = (res) => {
+      if (res.status === 'successful') {
+        setClippings((clippings) => [res.data, ...clippings]);
+      } else {
+        console.error('clipping:create failed');
+        setSocketError(res.data);
+      }
+    };
+
+    const payload =
+      contentType === 'Text'
+        ? { origin: 'desktop', type: 'Text', content: text, isPinned: false }
+        : contentType === 'Link'
+        ? {
+            origin: 'desktop',
+            type: 'Link',
+            url: text,
+            isPinned: false,
+            thumbnail: `https://www.google.com/s2/favicons?sz=64&domain_url=${text}`,
+          }
+        : {};
+
+    socket.emit('clipping:create', user._id, payload, callback);
 
     // setLatestImage(imageBlob);
     setLoading(false);
   };
+
   return (
     <Container component="main" maxWidth="md">
       <Box
@@ -85,8 +97,13 @@ export default function ClippingsList({
             </LoadingButton>
           </Box>
         )}
-        {clippings.map((clipping, i) => (
-          <ClippingDetails clipping={clipping} key={i} />
+        {clippings.map((clipping) => (
+          <ClippingDetails
+            clipping={clipping}
+            setClippings={setClippings}
+            setSocketError={setSocketError}
+            key={clipping._id}
+          />
         ))}
       </Box>
     </Container>

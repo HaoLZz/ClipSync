@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import Collapse from '@mui/material/Collapse';
 import PrimaryAppBar from './PrimaryAppBar';
@@ -8,6 +8,7 @@ import Message from '../UI/Message';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
 import { useUser } from '../Users/UserContext';
+import SocketContext from './SocketContext';
 
 const socket = io('wss://localhost:5000');
 
@@ -87,33 +88,41 @@ export default function AppPage() {
 
   return (
     <>
-      {userAgree === 'prompt' && (
-        <AlertDialog
-          open={openAlert}
-          setOpen={setOpenAlert}
-          setAgree={setUserAgree}
-        />
-      )}
-      <PrimaryAppBar />
-      {permissionError && (
-        <Collapse in={openMessage}>
-          <Message
-            severity="error"
-            title="Error"
-            handleClose={() => setOpenMessage(false)}
-          >{`${permissionError.name}: ${permissionError.message}`}</Message>
-        </Collapse>
-      )}
-      <Tabs tabLabels={tabLabels}>
-        <ClippingsList
-          clippings={clippings}
-          setClippings={setClippings}
-          latestText={latestText}
-          setLatestText={setLatestText}
-          showActionButton={true}
-        />
-        <ClippingsList clippings={pinnedClippings} showActionButton={false} />
-      </Tabs>
+      <SocketContext.Provider value={socket}>
+        {userAgree === 'prompt' && (
+          <AlertDialog
+            open={openAlert}
+            setOpen={setOpenAlert}
+            setAgree={setUserAgree}
+          />
+        )}
+        <PrimaryAppBar />
+        {permissionError && (
+          <Collapse in={openMessage}>
+            <Message
+              severity="error"
+              title="Error"
+              handleClose={() => setOpenMessage(false)}
+            >{`${permissionError.name}: ${permissionError.message}`}</Message>
+          </Collapse>
+        )}
+        <Tabs tabLabels={tabLabels}>
+          <ClippingsList
+            clippings={clippings}
+            setClippings={setClippings}
+            latestText={latestText}
+            setLatestText={setLatestText}
+            setSocketErro={setSocketError}
+            showActionButton={true}
+          />
+          <ClippingsList
+            clippings={pinnedClippings}
+            setClippings={setClippings}
+            showActionButton={false}
+            setSocketErro={setSocketError}
+          />
+        </Tabs>
+      </SocketContext.Provider>
     </>
   );
 }
