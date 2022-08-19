@@ -13,6 +13,7 @@ import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 import SocketContext from './SocketContext';
 
@@ -89,15 +90,21 @@ export default function ClippingDetails({
         >
           <Avatar variant="rounded">{originIcon}</Avatar>
           <ButtonGroup>
-            <IconButton>
-              <ContentCopyOutlinedIcon />
-            </IconButton>
-            <IconButton onClick={() => togglePinned(_id, isPinned)}>
-              {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-            </IconButton>
-            <IconButton onClick={() => handleDelete(_id)}>
-              <DeleteOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Copy">
+              <IconButton>
+                <ContentCopyOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Pin">
+              <IconButton onClick={() => togglePinned(_id, isPinned)}>
+                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => handleDelete(_id)}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </ButtonGroup>
         </Box>
       </>
@@ -131,15 +138,21 @@ export default function ClippingDetails({
         >
           <Avatar variant="rounded">{originIcon}</Avatar>
           <ButtonGroup>
-            <IconButton>
-              <ContentCopyOutlinedIcon />
-            </IconButton>
-            <IconButton onClick={() => togglePinned(_id, isPinned)}>
-              {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-            </IconButton>
-            <IconButton onClick={() => handleDelete(_id)}>
-              <DeleteOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Copy">
+              <IconButton>
+                <ContentCopyOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Pin">
+              <IconButton onClick={() => togglePinned(_id, isPinned)}>
+                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => handleDelete(_id)}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </ButtonGroup>
         </Box>
       </>
@@ -184,18 +197,26 @@ export default function ClippingDetails({
         >
           <Avatar variant="rounded">{originIcon}</Avatar>
           <ButtonGroup>
-            <IconButton>
-              <ContentCopyOutlinedIcon />
-            </IconButton>
-            <IconButton>
-              <DownloadOutlinedIcon />
-            </IconButton>
-            <IconButton onClick={() => togglePinned(_id, isPinned)}>
-              {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-            </IconButton>
-            <IconButton onClick={() => handleDelete(_id)}>
-              <DeleteOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Copy">
+              <IconButton>
+                <ContentCopyOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Download">
+              <IconButton>
+                <DownloadOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Pin">
+              <IconButton onClick={() => togglePinned(_id, isPinned)}>
+                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => handleDelete(_id)}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </ButtonGroup>
         </Box>
       </>
@@ -237,15 +258,21 @@ export default function ClippingDetails({
         >
           <Avatar variant="rounded">{originIcon}</Avatar>
           <ButtonGroup>
-            <IconButton>
-              <DownloadOutlinedIcon />
-            </IconButton>
-            <IconButton onClick={() => togglePinned(_id, isPinned)}>
-              {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-            </IconButton>
-            <IconButton onClick={() => handleDelete(_id)}>
-              <DeleteOutlinedIcon />
-            </IconButton>
+            <Tooltip title="Download">
+              <IconButton>
+                <DownloadOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Pin">
+              <IconButton onClick={() => togglePinned(_id, isPinned)}>
+                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton onClick={() => handleDelete(_id)}>
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
           </ButtonGroup>
         </Box>
       </>
