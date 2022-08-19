@@ -21,7 +21,6 @@ export default function AppPage() {
   const [user, setUser] = useUser();
 
   const { error: permissionError } = usePermissions();
-  const [userAgree, setUserAgree] = useState('prompt');
   const [openAlert, setOpenAlert] = useState(true);
   const [openMessage, setOpenMessage] = useState(true);
 
@@ -89,12 +88,8 @@ export default function AppPage() {
   return (
     <>
       <SocketContext.Provider value={socket}>
-        {userAgree === 'prompt' && (
-          <AlertDialog
-            open={openAlert}
-            setOpen={setOpenAlert}
-            setAgree={setUserAgree}
-          />
+        {!user.grantPermissions && (
+          <AlertDialog open={openAlert} setOpen={setOpenAlert} />
         )}
         <PrimaryAppBar />
         {permissionError && (
