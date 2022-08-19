@@ -47,12 +47,12 @@ export default function SignIn() {
     const { userInfo, error } = await signin(email, password);
     if (error) {
       console.error(error);
+      return;
     }
 
     if (getAuthStatus() && userInfo) {
       setUser(userInfo);
-      setEmail('');
-      setPassword('');
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
       // redirect uesrs to main app after login
       navigate('/app', { replace: true });
     }
