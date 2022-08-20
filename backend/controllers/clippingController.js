@@ -5,8 +5,9 @@ import User from '../models/userModel.js';
 // @event clipping:create
 // @access Private
 
-const createClipping = async function (userId, clippingToCreate, callback) {
+const createClipping = async function (clippingToCreate, callback) {
   const socket = this;
+  const userId = socket.user._id;
   try {
     const user = await User.findById(userId);
 
@@ -18,7 +19,7 @@ const createClipping = async function (userId, clippingToCreate, callback) {
 
     if (savedClipping) {
       callback({ status: 'successful', data: savedClipping });
-      socket.broadcast.emit('clipping:created', savedClipping);
+      socket.to(user._id.toString()).emit('clipping:created', savedClipping);
     } else {
       throw new Error('Saving clipping to database failed');
     }
@@ -51,6 +52,7 @@ const readClipping = async function (clippingId, callback) {
 
 const updateClipping = async function (clippingId, update, callback) {
   const socket = this;
+  const userId = socket.user._id;
   try {
     const clipping = await Clipping.findById(clippingId);
 
@@ -59,7 +61,7 @@ const updateClipping = async function (clippingId, update, callback) {
       const updatedClipping = await clipping.save();
 
       callback({ status: 'successful', data: updatedClipping });
-      socket.broadcast.emit('clipping:updated', updatedClipping);
+      socket.to(userId.toString()).emit('clipping:updated', updatedClipping);
     } else {
       throw new Error(`Clipping with id${clippingId} not found`);
     }
@@ -74,6 +76,7 @@ const updateClipping = async function (clippingId, update, callback) {
 
 const deleteClipping = async function (clippingId, callback) {
   const socket = this;
+  const userId = socket.user._id;
   try {
     const deletedClipping = await Clipping.findByIdAndDelete(clippingId).select(
       '_id',
@@ -81,7 +84,9 @@ const deleteClipping = async function (clippingId, callback) {
 
     if (deletedClipping) {
       callback({ status: 'successful', data: deletedClipping._id });
-      socket.broadcast.emit('clipping:deleted', deletedClipping._id);
+      socket
+        .to(userId.toString())
+        .emit('clipping:deleted', deletedClipping._id);
     } else {
       throw new Error(`Clipping with id${clippingId} not found`);
     }
