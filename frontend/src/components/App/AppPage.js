@@ -10,7 +10,8 @@ import usePermissions from './usePermissions';
 import { useUser } from '../Users/UserContext';
 import SocketContext from './SocketContext';
 
-const socket = io('wss://localhost:5000');
+const URL = process.env.REACT_APP_SOCKET_URL;
+const socket = io(URL, { autoConnect: false });
 
 export default function AppPage() {
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -27,13 +28,24 @@ export default function AppPage() {
   const [latestText, setLatestText] = useState('');
 
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log(socket.id);
-      setIsConnected(true);
+    // when in development, add a catch-all listener
+    if (process.env.REACT_APP_ENV_MODE === 'development') {
+      socket.onAny((event, ...args) => {
+        console.log(event, args);
+      });
+    }
+
+    socket.auth = { token: user.token };
+    socket.connect();
+
+    socket.on('connect_error', (err) => {
+      setSocketError(err.message);
+      setIsConnected(false);
     });
 
-    if (isConnected) {
-      socket.emit('User_Connect', user._id);
+    socket.on('connect', () => {
+      console.log('connected to server', socket.id);
+      setIsConnected(true);
       socket.emit('clipping:list', user._id, (res) => {
         if (res.status === 'successful') {
           setClippings(res.data.reverse());
@@ -42,7 +54,7 @@ export default function AppPage() {
           setSocketError('clipping:list failed');
         }
       });
-    }
+    });
 
     socket.on('disconnect', () => {
       setIsConnected(false);
@@ -73,13 +85,11 @@ export default function AppPage() {
       });
     });
     return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('clipping:created');
-      socket.off('clipping:updated');
-      socket.off('clipping:deleted');
+      socket.removeAllListeners();
+      socket.offAny();
+      socket.disconnect();
     };
-  }, [user._id, isConnected]);
+  }, [user._id, isConnected, user.token]);
 
   const tabLabels = ['Clipboard', 'Pinned'];
 
