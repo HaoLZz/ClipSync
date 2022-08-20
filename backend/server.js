@@ -57,6 +57,10 @@ io.use(socketAuth);
 io.on('connection', (socket) => {
   const connectionsPool = io.of('/').sockets;
   const userId = socket.user._id;
+
+  // join a room under '<userId>'
+  socket.join(userId.toString());
+
   let userConnections = [];
 
   for (let [id, socket] of connectionsPool) {
