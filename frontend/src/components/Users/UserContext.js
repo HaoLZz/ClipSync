@@ -6,7 +6,7 @@ export const UserSetContext = createContext();
 export function UserProvider({ children }) {
   const userLocalStore = JSON.parse(localStorage.getItem('userInfo'));
   const userInitialValue =
-    userLocalStore._id && userLocalStore.token ? userLocalStore : null;
+    userLocalStore?._id && userLocalStore?.token ? userLocalStore : null;
   const [user, setUser] = useState(userInitialValue);
 
   return (

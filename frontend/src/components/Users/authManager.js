@@ -13,12 +13,14 @@ class AuthManager {
     let userInfo = null;
     let error = null;
     try {
-      const userInfo = await apiRequest('api/users/login', 'POST', {
+      userInfo = await apiRequest('api/users/login', 'POST', {
         email,
         password,
       });
+      console.log(userInfo);
       if (userInfo && userInfo._id && userInfo.token) {
         this._isAuthenticated = true;
+        console.log(this._isAuthenticated);
       }
     } catch (err) {
       error = err;
@@ -37,6 +39,6 @@ class AuthManager {
 }
 
 const userLocalStore = JSON.parse(localStorage.getItem('userInfo'));
-const userStored = userLocalStore._id && userLocalStore.token;
+const userStored = userLocalStore?._id && userLocalStore?.token;
 
 export const authManager = new AuthManager(userStored);
