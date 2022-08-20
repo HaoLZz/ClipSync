@@ -17,6 +17,7 @@ import {
   deleteClipping,
   listClipping,
 } from './controllers/clippingController.js';
+import { socketAuth } from './middleware/authMiddleware.js';
 
 config();
 
@@ -51,11 +52,28 @@ const io = new Server(server, {
   },
 });
 
+io.use(socketAuth);
+
 io.on('connection', (socket) => {
-  console.log(`Socket:${socket.id} connected`);
+  const connectionsPool = io.of('/').sockets;
+  const userId = socket.user._id;
+  let userConnections = [];
+
+  for (let [id, socket] of connectionsPool) {
+    if (socket.user._id.equals(userId)) {
+      userConnections.push(id);
+    }
+  }
+
+  socket.emit('user:connected', userConnections);
+  console.log('pool:', connectionsPool.size);
+  console.log(`Socket ${socket.id} from user ${userId} connected`);
 
   socket.on('disconnect', () => {
     console.log(`Socket:${socket.id} disconnected`);
+    userConnections = userConnections.filter(
+      (connection) => connection !== socket.id,
+    );
   });
 
   socket.on('User_Connect', (userId) =>

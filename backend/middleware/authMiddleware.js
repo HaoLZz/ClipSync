@@ -25,4 +25,24 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { protect };
+const socketAuth = async (socket, next) => {
+  const token = socket.handshake.auth.token || socket.handshake.headers.token;
+  if (!token) {
+    return next(new Error('Invalid authorization: token not found'));
+  }
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      socket.user = await User.findById(decoded.id).select('-password');
+
+      next();
+    } catch (err) {
+      console.error('Error', err);
+      return next(new Error('Not authorized: token failed'));
+    }
+  }
+};
+
+export { protect, socketAuth };
