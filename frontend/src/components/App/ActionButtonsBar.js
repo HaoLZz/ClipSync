@@ -9,22 +9,13 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 
-export default function ActionButtonsBar({ handleClick }) {
+export default function ActionButtonsBar({ handleClick, inputEl }) {
   const spin = keyframes`
   from {
     transform: rotate(0deg) scale(0.7);
   }
   to {
-    transform: rotate(360deg) scale(1);
-  }
-`;
-
-  const scale = keyframes`
-  from {
-    transform: scale(0.7);
-  }
-  to {
-    transform: scale(1.1);
+    transform: rotate(360deg) scale(1.1);
   }
 `;
 
@@ -48,9 +39,9 @@ export default function ActionButtonsBar({ handleClick }) {
 
   return (
     <Box
+      aria-label="action buttons bar"
       sx={{
         display: 'flex',
-        justifyContent: 'space-between',
         marginBottom: 2,
         position: 'sticky',
         top: '50px',
@@ -61,58 +52,87 @@ export default function ActionButtonsBar({ handleClick }) {
         paddingX: '20px',
       }}
     >
-      <Box marginRight={2}>
-        <ButtonGroup>
-          <Tooltip title="Upload Photo" placement="top">
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-              sx={{
-                background: 'rgba(173, 216, 230, 0.5)',
-                animation: `${bounce} 1s ease 2 running`,
-                '&:hover': { animationPlayState: 'paused' },
-              }}
-            >
-              <form hidden>
-                <input hidden accept="image/*" type="file" />
-              </form>
-
-              <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Upload File" placement="top">
-            <IconButton color="primary" aria-label="upload file">
-              <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Clear All" placement="top">
-            <IconButton color="primary" aria-label="clear all">
-              <ClearIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-            </IconButton>
-          </Tooltip>
-        </ButtonGroup>
-      </Box>
-      <Tooltip title="Sync Clip" placement="top">
-        <IconButton
-          color="secondary"
-          sx={{
-            background: 'rgba(182, 149, 192, 0.8)',
-            animation: `${scale} 1.5s 3s 5 alternate ease`,
-            '&:hover': {
-              backgroundColor: 'rgba(182, 149, 192, 0.8)',
-              animation: `${spin} 1.5s infinite alternate ease`,
-            },
-          }}
-          onClick={handleClick}
-        >
-          <SyncIcon
+      <ButtonGroup
+        sx={{ flex: '1 1 70%', display: 'flex', columnGap: '15px' }}
+        component="div"
+      >
+        <Tooltip title="Upload Photo" placement="top">
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
             sx={{
-              fontSize: { xs: '18px', sm: '24px' },
+              animation: `${bounce} 1s ease 2 running`,
+              '&:hover': {
+                animationPlayState: 'paused',
+                background: 'rgba(173, 216, 230, 0.5)',
+              },
             }}
-          />
-        </IconButton>
-      </Tooltip>
+          >
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={(e) => console.log(e.target?.files[0])}
+            />
+            <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Upload File" placement="top">
+          <IconButton
+            color="primary"
+            aria-label="upload file"
+            sx={{
+              '&:hover': {
+                background: 'rgba(173, 216, 230, 0.5)',
+              },
+            }}
+          >
+            <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Clear All" placement="top">
+          <IconButton
+            color="warning"
+            aria-label="clear all"
+            sx={{ '&:hover': { backgroundColor: 'rgba(250, 181, 127, 0.5)' } }}
+          >
+            <ClearIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+          </IconButton>
+        </Tooltip>
+      </ButtonGroup>
+      <Box
+        sx={{ flex: '1 1 30%', display: 'flex', flexDirection: 'row-reverse' }}
+      >
+        <Tooltip title="Sync Clip" placement="top">
+          <IconButton
+            color="secondary"
+            aria-label="sync clipboard"
+            sx={{
+              backgroundColor: 'rgba(182, 149, 192, 0.8)',
+              boxShadow: '0 0.1em #B695C0',
+              '&:hover': {
+                backgroundColor: 'rgba(182, 149, 192, 0.6)',
+              },
+              '&:active': {
+                transform: 'translateY(0.1em)',
+                boxShadow: '0 0.05em #B695C0',
+              },
+            }}
+            onClick={handleClick}
+          >
+            <SyncIcon
+              sx={{
+                fontSize: { xs: '18px', sm: '24px' },
+                animation: `${spin} 1.5s 3s 5 alternate ease`,
+                '&:hover': {
+                  animationPlayState: 'paused',
+                },
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }
