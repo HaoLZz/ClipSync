@@ -57,7 +57,7 @@ export default function ClippingsList({
           }
         : {};
 
-    socket.emit('clipping:create', user._id, payload, callback);
+    socket.emit('clipping:create', payload, callback);
 
     // setLatestImage(imageBlob);
   };
