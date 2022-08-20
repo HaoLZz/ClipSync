@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ClippingDetails from './ClippingDetails';
 import { getClipboardText } from '../../utils/clipboard';
-import { validURL } from '../../utils/utils';
+import { validURL, isImageFile } from '../../utils/utils';
 import SocketContext from './SocketContext';
-import UserContext from '../Users/UserContext';
 import ActionButtonsBar from './ActionButtonsBar';
 
 export default function ClippingsList({
@@ -17,10 +16,10 @@ export default function ClippingsList({
   showActionButton,
 }) {
   const socket = useContext(SocketContext);
-  const user = useContext(UserContext);
+
   // const [latestImage, setLatestImage] = useState(null);
 
-  const handleClick = async () => {
+  const handleSync = async () => {
     const text = await getClipboardText();
     // const imageBlob = await getClipboardContents();
     if (
@@ -62,10 +61,35 @@ export default function ClippingsList({
     // setLatestImage(imageBlob);
   };
 
+  const handleImageUpload = (imageFile) => {
+    console.log(imageFile);
+    if (!isImageFile(imageFile)) {
+      console.error('selected file is not an image');
+      return;
+    }
+
+    const callback = (res) => {
+      if (res.status === 'successful') {
+        console.log('image upload successful');
+        // setClippings((clippings) => [res.data, ...clippings]);
+      } else {
+        console.error(res.status, res.data);
+        setSocketError(res.data);
+      }
+    };
+
+    socket.emit('clipping:create_image', imageFile, callback);
+  };
+
   return (
     <>
       <Container component="main" maxWidth="md">
-        {showActionButton && <ActionButtonsBar handleClick={handleClick} />}
+        {showActionButton && (
+          <ActionButtonsBar
+            handleSync={handleSync}
+            handleImageUpload={handleImageUpload}
+          />
+        )}
         <Box
           sx={{
             marginTop: 3,

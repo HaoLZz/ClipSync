@@ -117,7 +117,7 @@ export default function AppPage() {
             setClippings={setClippings}
             latestText={latestText}
             setLatestText={setLatestText}
-            setSocketErro={setSocketError}
+            setSocketError={setSocketError}
             showActionButton={true}
           />
           <ClippingsList

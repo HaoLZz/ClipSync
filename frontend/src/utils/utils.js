@@ -7,3 +7,11 @@ export function validURL(str) {
   }
   return url.protocol === 'http:' || url.protocol === 'https:';
 }
+
+export function isImageFile(file) {
+  if (!file) {
+    console.error('file is empty');
+    return false;
+  }
+  return file.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|bmp|BMP)$/);
+}

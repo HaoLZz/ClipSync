@@ -12,6 +12,7 @@ import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import {
   createClipping,
+  createImageClipping,
   readClipping,
   updateClipping,
   deleteClipping,
@@ -85,6 +86,7 @@ io.on('connection', (socket) => {
   );
 
   socket.on('clipping:create', createClipping);
+  socket.on('clipping:create_image', createImageClipping);
   socket.on('clipping:read', readClipping);
   socket.on('clipping:update', updateClipping);
   socket.on('clipping:delete', deleteClipping);

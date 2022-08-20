@@ -1,7 +1,10 @@
 import Clipping from '../models/clippingModel.js';
 import User from '../models/userModel.js';
+import { writeFile } from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// @desc  Create new clipping
+// @desc  Create a new clipping
 // @event clipping:create
 // @access Private
 
@@ -25,6 +28,43 @@ const createClipping = async function (clippingToCreate, callback) {
     }
   } catch (err) {
     callback({ status: 'clipping:create failed', data: err });
+  }
+};
+
+// @desc  Create a new image clipping
+// @event clipping:create_image
+// @access Private
+
+const createImageClipping = async function (file, callback) {
+  const socket = this;
+  const userId = socket.user._id;
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('User does not exist');
+    }
+    console.log(file);
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    console.log(__dirname);
+    const result = await writeFile(
+      path.join(__dirname, '../tmp/upload/test.png'),
+      file,
+    );
+    if (result) {
+      console.log(result);
+      callback({ status: 'successful', data: '' });
+    }
+    //   const savedClipping = await Clipping.create({ ...clippingToCreate, user });
+
+    //   if (savedClipping) {
+    //     callback({ status: 'successful', data: savedClipping });
+    //     socket.to(user._id.toString()).emit('clipping:created', savedClipping);
+    //   } else {
+    //     throw new Error('Saving clipping to database failed');
+    //   }
+  } catch (err) {
+    callback({ status: 'clipping:create_image failed', data: err });
   }
 };
 
@@ -120,6 +160,7 @@ const listClipping = async function (userId, callback) {
 
 export {
   createClipping,
+  createImageClipping,
   readClipping,
   updateClipping,
   deleteClipping,

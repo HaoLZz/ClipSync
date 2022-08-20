@@ -9,7 +9,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 
-export default function ActionButtonsBar({ handleClick, inputEl }) {
+export default function ActionButtonsBar({ handleSync, handleImageUpload }) {
   const spin = keyframes`
   from {
     transform: rotate(0deg) scale(0.7);
@@ -73,7 +73,7 @@ export default function ActionButtonsBar({ handleClick, inputEl }) {
               hidden
               accept="image/*"
               type="file"
-              onChange={(e) => console.log(e.target?.files[0])}
+              onChange={(e) => handleImageUpload(e.target?.files[0])}
             />
             <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
           </IconButton>
@@ -119,7 +119,7 @@ export default function ActionButtonsBar({ handleClick, inputEl }) {
                 boxShadow: '0 0.05em #B695C0',
               },
             }}
-            onClick={handleClick}
+            onClick={handleSync}
           >
             <SyncIcon
               sx={{

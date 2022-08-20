@@ -14,14 +14,18 @@ const linkSchema = mongoose.Schema({
   },
   thumbnail: {
     type: String,
-    required: false,
+    required: [true, 'thumbnail link is missing'],
   },
 });
 
 const fileSchema = mongoose.Schema({
-  content: {
+  originalFilename: {
     type: String,
-    required: [true, 'file is missing'],
+    required: [true, 'original filename is missing'],
+  },
+  downloadLink: {
+    type: String,
+    default: '',
   },
   format: {
     type: String,
@@ -32,12 +36,21 @@ const fileSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  thumbnail: {
+    type: String,
+    required: false,
+    default: '',
+  },
 });
 
 const imageSchema = mongoose.Schema({
-  content: {
+  originalFilename: {
     type: String,
-    required: [true, 'image is missing'],
+    required: [true, 'original filename is missing'],
+  },
+  downloadLink: {
+    type: String,
+    default: '',
   },
   format: {
     type: String,
@@ -51,10 +64,12 @@ const imageSchema = mongoose.Schema({
   thumbnail: {
     type: String,
     required: false,
+    default: '',
   },
   resolution: {
     type: String,
     required: false,
+    default: '',
   },
 });
 
