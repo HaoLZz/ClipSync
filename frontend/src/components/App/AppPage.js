@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import io from 'socket.io-client';
 import Collapse from '@mui/material/Collapse';
 import PrimaryAppBar from './PrimaryAppBar';
@@ -8,6 +8,7 @@ import Message from '../UI/Message';
 import ClippingsList from './ClippingsList';
 import usePermissions from './usePermissions';
 import { useUser } from '../Users/UserContext';
+import clippingsReducer from './clippingsReducer';
 import SocketContext from './SocketContext';
 
 const URL = process.env.REACT_APP_SOCKET_URL;
@@ -18,7 +19,7 @@ export default function AppPage() {
   const [socketError, setSocketError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [clippings, setClippings] = useState([]);
+  const [clippings, dispatch] = useReducer(clippingsReducer, []);
 
   const [user, setUser] = useUser();
 
@@ -49,7 +50,7 @@ export default function AppPage() {
       setIsConnected(true);
       socket.emit('clipping:list', user._id, (res) => {
         if (res.status === 'successful') {
-          setClippings(res.data.reverse());
+          dispatch({ type: 'LIST_CLIPPING', payload: res.data.reverse() });
           setIsLoading(false);
         } else {
           console.error(res.data);
@@ -62,30 +63,17 @@ export default function AppPage() {
       setIsConnected(false);
     });
 
-    socket.on('clipping:created', (newClipping) => {
-      setClippings((clippings) => [newClipping, ...clippings]);
-    });
+    socket.on('clipping:created', (newClipping) =>
+      dispatch({ type: 'CREATE_CLIPPING', payload: newClipping }),
+    );
 
-    socket.on('clipping:updated', (updateClipping) => {
-      setClippings((clippings) =>
-        clippings.map((clipping) =>
-          clipping._id === updateClipping._id ? updateClipping : clipping,
-        ),
-      );
-    });
+    socket.on('clipping:updated', (updateClipping) =>
+      dispatch({ type: 'UPDATE_CLIPPING', payload: updateClipping }),
+    );
 
-    socket.on('clipping:deleted', (deletedClippingId) => {
-      setClippings((clippings) => {
-        const clippingIndex = clippings.findIndex(
-          (clipping) => clipping._id === deletedClippingId,
-        );
-
-        return [
-          ...clippings.slice(0, clippingIndex),
-          ...clippings.slice(clippingIndex + 1),
-        ];
-      });
-    });
+    socket.on('clipping:deleted', (deletedClippingId) =>
+      dispatch({ type: 'DELETE_CLIPPING', payload: deletedClippingId }),
+    );
     return () => {
       socket.removeAllListeners();
       socket.offAny();
@@ -116,7 +104,7 @@ export default function AppPage() {
         <Tabs tabLabels={tabLabels}>
           <ClippingsList
             clippings={clippings}
-            setClippings={setClippings}
+            dispatch={dispatch}
             latestText={latestText}
             setLatestText={setLatestText}
             setSocketError={setSocketError}
@@ -125,7 +113,7 @@ export default function AppPage() {
           />
           <ClippingsList
             clippings={pinnedClippings}
-            setClippings={setClippings}
+            dispatch={dispatch}
             showActionButton={false}
             setSocketErro={setSocketError}
             isLoading={isLoading}

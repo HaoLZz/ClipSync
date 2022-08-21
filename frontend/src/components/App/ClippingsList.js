@@ -16,7 +16,7 @@ import ActionButtonsBar from './ActionButtonsBar';
 
 export default function ClippingsList({
   clippings,
-  setClippings,
+  dispatch,
   latestText,
   setLatestText,
   setSocketError,
@@ -44,7 +44,7 @@ export default function ClippingsList({
 
     const callback = (res) => {
       if (res.status === 'successful') {
-        setClippings((clippings) => [res.data, ...clippings]);
+        dispatch({ type: 'CREATE_CLIPPING', payload: res.data });
       } else {
         console.error('clipping:create failed');
         setSocketError(res.data);
@@ -92,7 +92,7 @@ export default function ClippingsList({
     const callback = (res) => {
       if (res.status === 'successful') {
         console.log('image upload successful');
-        setClippings((clippings) => [res.data, ...clippings]);
+        dispatch({ type: 'CREATE_CLIPPING', payload: res.data });
       } else {
         console.error(res.status, res.data);
         setSocketError(res.data);
@@ -148,7 +148,7 @@ export default function ClippingsList({
             {clippings.map((clipping) => (
               <ClippingDetails
                 clipping={clipping}
-                setClippings={setClippings}
+                dispatch={dispatch}
                 setSocketError={setSocketError}
                 key={clipping._id}
               />

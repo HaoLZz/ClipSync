@@ -20,7 +20,7 @@ import SocketContext from './SocketContext';
 
 export default function ClippingDetails({
   clipping,
-  setClippings,
+  dispatch,
   setSocketError,
 }) {
   const socket = useContext(SocketContext);
@@ -38,11 +38,7 @@ export default function ClippingDetails({
   const togglePinned = (clippingId, isPinned) => {
     const callback = (res) => {
       if (res.status === 'successful') {
-        setClippings((clippings) =>
-          clippings.map((clipping) =>
-            clipping._id === res.data?._id ? res.data : clipping,
-          ),
-        );
+        dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
       } else {
         console.error('clipping:update failed');
         setSocketError(res.data);
@@ -60,16 +56,7 @@ export default function ClippingDetails({
   const handleDelete = (clippingId) => {
     const callback = (res) => {
       if (res.status === 'successful') {
-        setClippings((clippings) => {
-          const clippingIndex = clippings.findIndex(
-            (clipping) => clipping._id === res.data,
-          );
-
-          return [
-            ...clippings.slice(0, clippingIndex),
-            ...clippings.slice(clippingIndex + 1),
-          ];
-        });
+        dispatch({ type: 'DELETE_CLIPPING', payload: res.data });
       } else {
         console.error('clipping:delete failed');
         setSocketError(res.data);
