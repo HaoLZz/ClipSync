@@ -56,10 +56,10 @@ const createImageClipping = async function (
 
     const { originalFilename, format, size } = meta;
 
+    const clippingToCreate = { ...meta, ...clippingInfo };
     const initialClipping = await Clipping.create({
+      ...clippingToCreate,
       user,
-      ...meta,
-      ...clippingInfo,
     });
 
     const filenameToSave = `${initialClipping._id.toString()}.${
@@ -72,10 +72,9 @@ const createImageClipping = async function (
       path.join(__dirname, `../tmp/upload/${filenameToSave}`),
       file,
     );
-    if (result) {
-      callback({ status: 'successful', data: initialClipping });
-      socket.to(user._id.toString()).emit('clipping:created', initialClipping);
-    }
+
+    callback({ status: 'successful', data: initialClipping });
+    socket.to(user._id.toString()).emit('clipping:created', initialClipping);
   } catch (err) {
     callback({ status: 'clipping:create_image failed', data: err });
   }
