@@ -92,7 +92,7 @@ export default function ClippingsList({
     const callback = (res) => {
       if (res.status === 'successful') {
         console.log('image upload successful');
-        dispatch({ type: 'CREATE_CLIPPING', payload: res.data });
+        dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
       } else {
         console.error(res.status, res.data);
         setSocketError(res.data);

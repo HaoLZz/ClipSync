@@ -71,7 +71,7 @@ const createImageClipping = async function (
     const filePath = path.join(__dirname, `../tmp/upload/${filenameToSave}`);
     await writeFile(filePath, file);
 
-    callback({ status: 'successful', data: initialClipping });
+    socket.emit('clipping:created', initialClipping);
     socket.to(user._id.toString()).emit('clipping:created', initialClipping);
 
     const metadata = await sharp(file).metadata();
@@ -85,9 +85,10 @@ const createImageClipping = async function (
     clipping.thumbnail = `thumbnail_${filenameToSave}`;
     clipping.downloadLink = `${filenameToSave}`;
     clipping.resolution = `${metadata.width} X ${metadata.height}`;
+
     const imageClipping = await clipping.save();
 
-    socket.emit('clipping:updated', imageClipping);
+    callback({ status: 'successful', data: imageClipping });
     socket.to(userId.toString()).emit('clipping:updated', imageClipping);
   } catch (err) {
     callback({ status: 'clipping:create_image failed', data: err });
