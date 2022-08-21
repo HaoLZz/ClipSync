@@ -27,7 +27,7 @@ const navUrls = ['/', '/support', '/logout'];
 
 const ListItemRouter = withRouter(ListItem);
 
-export default function PrimaryAppBar(props) {
+function PrimaryAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -251,3 +251,5 @@ export default function PrimaryAppBar(props) {
     </Box>
   );
 }
+
+export default React.memo(PrimaryAppBar);

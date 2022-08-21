@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
@@ -28,7 +28,7 @@ export default function ClippingsList({
 
   // const [latestImage, setLatestImage] = useState(null);
 
-  const handleSync = async () => {
+  const handleSync = useCallback(async () => {
     const text = await getClipboardText();
     // const imageBlob = await getClipboardContents();
     if (
@@ -68,52 +68,55 @@ export default function ClippingsList({
     socket.emit('clipping:create', payload, callback);
 
     // setLatestImage(imageBlob);
-  };
+  }, [dispatch, latestText, setLatestText, setSocketError, socket]);
 
-  const handleImageUpload = (e) => {
-    const imageFile = e.target?.files[0];
-    console.log(imageFile);
+  const handleImageUpload = useCallback(
+    (e) => {
+      const imageFile = e.target?.files[0];
+      console.log(imageFile);
 
-    if (!isImageFile(imageFile)) {
-      console.error('selected file is not an image');
-      return;
-    }
-
-    setIsImageUploading(true);
-    const meta = {
-      originalFilename: imageFile.name,
-      format: imageFile.type.toLowerCase().split('/')[1],
-      size: formateFileSize(imageFile.size),
-    };
-
-    const clippingInfo = {
-      origin: 'desktop',
-      isPinned: false,
-      type: 'Image',
-    };
-
-    const callback = (res) => {
-      if (res.status === 'successful') {
-        console.log('image upload successful');
-        setIsImageUploading(false);
-        dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
-      } else {
-        console.error(res.status, res.data);
-        setSocketError(res.data);
+      if (!isImageFile(imageFile)) {
+        console.error('selected file is not an image');
+        return;
       }
-    };
 
-    socket.emit(
-      'clipping:create_image',
-      clippingInfo,
-      meta,
-      imageFile,
-      callback,
-    );
-    // reset input files
-    // inputEl.current.reset();
-    // console.log(e.target.files);
-  };
+      setIsImageUploading(true);
+      const meta = {
+        originalFilename: imageFile.name,
+        format: imageFile.type.toLowerCase().split('/')[1],
+        size: formateFileSize(imageFile.size),
+      };
+
+      const clippingInfo = {
+        origin: 'desktop',
+        isPinned: false,
+        type: 'Image',
+      };
+
+      const callback = (res) => {
+        if (res.status === 'successful') {
+          console.log('image upload successful');
+          setIsImageUploading(false);
+          dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
+        } else {
+          console.error(res.status, res.data);
+          setSocketError(res.data);
+        }
+      };
+
+      socket.emit(
+        'clipping:create_image',
+        clippingInfo,
+        meta,
+        imageFile,
+        callback,
+      );
+      // reset input files
+      // inputEl.current.reset();
+      // console.log(e.target.files);
+    },
+    [dispatch, setSocketError, socket],
+  );
 
   const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(
     (i) => {

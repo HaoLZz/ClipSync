@@ -11,11 +11,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function ActionButtonsBar({
-  handleSync,
-  handleImageUpload,
-  isImageUploading,
-}) {
+function ActionButtonsBar({ handleSync, handleImageUpload, isImageUploading }) {
   const spin = keyframes`
   from {
     transform: rotate(0deg) scale(0.7);
@@ -156,3 +152,5 @@ export default function ActionButtonsBar({
     </Box>
   );
 }
+
+export default React.memo(ActionButtonsBar);

@@ -19,11 +19,7 @@ import AsyncImage from '../UI/AsyncImage';
 
 import SocketContext from './SocketContext';
 
-export default function ClippingDetails({
-  clipping,
-  dispatch,
-  setSocketError,
-}) {
+function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const socket = useContext(SocketContext);
 
   const originList = ['desktop', 'tablet', 'phone'];
@@ -67,7 +63,7 @@ export default function ClippingDetails({
     socket.emit('clipping:delete', clippingId, callback);
   };
 
-  const Text = ({ content, isPinned, _id }) => {
+  const Text = React.memo(({ content, isPinned, _id }) => {
     return (
       <>
         <Typography variant="body1" component="p" gutterBottom>
@@ -98,9 +94,9 @@ export default function ClippingDetails({
         </Box>
       </>
     );
-  };
+  });
 
-  const Link = ({ url, isPinned, thumbnail, _id }) => {
+  const Link = React.memo(({ url, isPinned, thumbnail, _id }) => {
     return (
       <>
         <Box
@@ -146,112 +142,114 @@ export default function ClippingDetails({
         </Box>
       </>
     );
-  };
+  });
 
-  const Image = ({
-    _id,
-    thumbnail,
-    format,
-    originalFilename,
-    downloadLink,
-    isPinned,
-    resolution,
-    size,
-  }) => {
-    let imageSkeltonHeight = null;
-    if (resolution) {
-      const ratio = Number(resolution.trim().split('X')[0]) / 200;
-      imageSkeltonHeight = Math.ceil(
-        Number(resolution.trim().split('X')[1]) / ratio,
-      );
-    }
+  const Image = React.memo(
+    ({
+      _id,
+      thumbnail,
+      format,
+      originalFilename,
+      downloadLink,
+      isPinned,
+      resolution,
+      size,
+    }) => {
+      let imageSkeltonHeight = null;
+      if (resolution) {
+        const ratio = Number(resolution.trim().split('X')[0]) / 200;
+        imageSkeltonHeight = Math.ceil(
+          Number(resolution.trim().split('X')[1]) / ratio,
+        );
+      }
 
-    return (
-      <>
-        <Box
-          component="div"
-          sx={{
-            marginBottom: '15px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {thumbnail ? (
-            <Box
-              component="div"
-              sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-            >
-              <AsyncImage
-                src={thumbnail}
-                alt="image thumbnail"
-                imageSkeltonHeight={imageSkeltonHeight}
-                imageSkeltonWidth={200}
+      return (
+        <>
+          <Box
+            component="div"
+            sx={{
+              marginBottom: '15px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {thumbnail ? (
+              <Box
+                component="div"
+                sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
+              >
+                <AsyncImage
+                  src={thumbnail}
+                  alt="image thumbnail"
+                  imageSkeltonHeight={imageSkeltonHeight}
+                  imageSkeltonWidth={200}
+                />
+              </Box>
+            ) : (
+              <Skeleton
+                variant="rounded"
+                width={210}
+                height={118}
+                animation="wave"
+                sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
               />
+            )}
+            <Box>
+              <Typography variant="subtitle1" component="p">
+                {originalFilename}
+              </Typography>
+              <Typography variant="subtitle1" component="p">
+                {resolution}
+              </Typography>
+              <Typography variant="subtitle1" component="p">
+                {format}
+              </Typography>
+              <Typography variant="subtitle1" component="p">
+                {size}
+              </Typography>
             </Box>
-          ) : (
-            <Skeleton
-              variant="rounded"
-              width={210}
-              height={118}
-              animation="wave"
-              sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-            />
-          )}
-          <Box>
-            <Typography variant="subtitle1" component="p">
-              {originalFilename}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {resolution}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {format}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {size}
-            </Typography>
           </Box>
-        </Box>
-        <Box
-          component="div"
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Avatar variant="rounded">{originIcon}</Avatar>
-          <ButtonGroup>
-            <Tooltip title="Download">
-              <span>
-                <IconButton disabled={Boolean(!downloadLink)}>
-                  <DownloadOutlinedIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title="Pin">
-              <span>
-                <IconButton
-                  onClick={() => togglePinned(_id, isPinned)}
-                  disabled={Boolean(!downloadLink)}
-                >
-                  {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-                </IconButton>
-              </span>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <span>
-                <IconButton
-                  onClick={() => handleDelete(_id)}
-                  disabled={Boolean(!downloadLink)}
-                >
-                  <DeleteOutlinedIcon />
-                </IconButton>
-              </span>
-            </Tooltip>
-          </ButtonGroup>
-        </Box>
-      </>
-    );
-  };
+          <Box
+            component="div"
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Avatar variant="rounded">{originIcon}</Avatar>
+            <ButtonGroup>
+              <Tooltip title="Download">
+                <span>
+                  <IconButton disabled={Boolean(!downloadLink)}>
+                    <DownloadOutlinedIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Pin">
+                <span>
+                  <IconButton
+                    onClick={() => togglePinned(_id, isPinned)}
+                    disabled={Boolean(!downloadLink)}
+                  >
+                    {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+                  </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <span>
+                  <IconButton
+                    onClick={() => handleDelete(_id)}
+                    disabled={Boolean(!downloadLink)}
+                  >
+                    <DeleteOutlinedIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            </ButtonGroup>
+          </Box>
+        </>
+      );
+    },
+  );
 
-  const File = ({ _id, format, content, isPinned, size }) => {
+  const File = React.memo(({ _id, format, content, isPinned, size }) => {
     return (
       <>
         <Box
@@ -305,7 +303,7 @@ export default function ClippingDetails({
         </Box>
       </>
     );
-  };
+  });
   return (
     <>
       <Card sx={{ padding: '15px 25px', width: '100%', marginBottom: '20px' }}>
@@ -317,3 +315,5 @@ export default function ClippingDetails({
     </>
   );
 }
+
+export default React.memo(ClippingDetails);
