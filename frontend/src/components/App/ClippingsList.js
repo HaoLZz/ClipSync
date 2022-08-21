@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import ClippingDetails from './ClippingDetails';
 import { getClipboardText } from '../../utils/clipboard';
-import { validURL, isImageFile } from '../../utils/utils';
+import { validURL, isImageFile, formateFileSize } from '../../utils/utils';
 import SocketContext from './SocketContext';
 import ActionButtonsBar from './ActionButtonsBar';
 
@@ -67,6 +67,18 @@ export default function ClippingsList({
       console.error('selected file is not an image');
       return;
     }
+    console.log(typeof imageFile.size);
+    const meta = {
+      originalFilename: imageFile.name,
+      format: imageFile.type.toLowerCase().split('/')[1],
+      size: imageFile.size,
+    };
+
+    const clippingInfo = {
+      origin: 'desktop',
+      isPinned: false,
+      type: 'Image',
+    };
 
     const callback = (res) => {
       if (res.status === 'successful') {
@@ -78,7 +90,13 @@ export default function ClippingsList({
       }
     };
 
-    socket.emit('clipping:create_image', imageFile, callback);
+    socket.emit(
+      'clipping:create_image',
+      clippingInfo,
+      meta,
+      imageFile,
+      callback,
+    );
   };
 
   return (

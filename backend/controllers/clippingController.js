@@ -35,7 +35,12 @@ const createClipping = async function (clippingToCreate, callback) {
 // @event clipping:create_image
 // @access Private
 
-const createImageClipping = async function (file, callback) {
+const createImageClipping = async function (
+  clippingInfo,
+  meta,
+  file,
+  callback,
+) {
   const socket = this;
   const userId = socket.user._id;
   try {
@@ -44,25 +49,33 @@ const createImageClipping = async function (file, callback) {
     if (!user) {
       throw new Error('User does not exist');
     }
-    console.log(file);
+
+    if (!meta) {
+      throw new Error('Metadata of image is missing');
+    }
+
+    const { originalFilename, format, size } = meta;
+
+    const initialClipping = await Clipping.create({
+      user,
+      ...meta,
+      ...clippingInfo,
+    });
+
+    const filenameToSave = `${initialClipping._id.toString()}.${
+      initialClipping.format
+    }`;
+
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    console.log(__dirname);
+
     const result = await writeFile(
-      path.join(__dirname, '../tmp/upload/test.png'),
+      path.join(__dirname, `../tmp/upload/${filenameToSave}`),
       file,
     );
     if (result) {
-      console.log(result);
-      callback({ status: 'successful', data: '' });
+      callback({ status: 'successful', data: initialClipping });
+      socket.to(user._id.toString()).emit('clipping:created', initialClipping);
     }
-    //   const savedClipping = await Clipping.create({ ...clippingToCreate, user });
-
-    //   if (savedClipping) {
-    //     callback({ status: 'successful', data: savedClipping });
-    //     socket.to(user._id.toString()).emit('clipping:created', savedClipping);
-    //   } else {
-    //     throw new Error('Saving clipping to database failed');
-    //   }
   } catch (err) {
     callback({ status: 'clipping:create_image failed', data: err });
   }
