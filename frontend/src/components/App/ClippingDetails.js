@@ -159,7 +159,14 @@ export default function ClippingDetails({
     );
   };
 
-  const Image = ({ _id, format, content, isPinned, resolution, size }) => {
+  const Image = ({
+    _id,
+    format,
+    originalFilename,
+    isPinned,
+    resolution,
+    size,
+  }) => {
     return (
       <>
         <Box
@@ -170,15 +177,15 @@ export default function ClippingDetails({
             alignItems: 'center',
           }}
         >
-          <Avatar
+          <Box
+            component="img"
             src="https://placeholder.pics/svg/100x100/FFB01E"
             alt="image thumbnail"
-            variant="square"
-            sx={{ width: '100px', height: '100px', marginRight: '5%' }}
+            sx={{ maxWidthdth: '100%', marginRight: '5%' }}
           />
           <Box>
             <Typography variant="subtitle1" component="p">
-              {content}
+              {originalFilename}
             </Typography>
             <Typography variant="subtitle1" component="p">
               {resolution}

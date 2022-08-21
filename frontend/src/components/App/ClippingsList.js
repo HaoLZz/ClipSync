@@ -71,7 +71,7 @@ export default function ClippingsList({
     const meta = {
       originalFilename: imageFile.name,
       format: imageFile.type.toLowerCase().split('/')[1],
-      size: imageFile.size,
+      size: formateFileSize(imageFile.size),
     };
 
     const clippingInfo = {
@@ -83,7 +83,7 @@ export default function ClippingsList({
     const callback = (res) => {
       if (res.status === 'successful') {
         console.log('image upload successful');
-        // setClippings((clippings) => [res.data, ...clippings]);
+        setClippings((clippings) => [res.data, ...clippings]);
       } else {
         console.error(res.status, res.data);
         setSocketError(res.data);
