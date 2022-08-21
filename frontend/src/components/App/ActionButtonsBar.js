@@ -1,5 +1,6 @@
 import React from 'react';
 import { keyframes } from '@emotion/react';
+import { green } from '@mui/material/colors';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ImageIcon from '@mui/icons-material/Image';
@@ -8,8 +9,13 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ClearIcon from '@mui/icons-material/Clear';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
-export default function ActionButtonsBar({ handleSync, handleImageUpload }) {
+export default function ActionButtonsBar({
+  handleSync,
+  handleImageUpload,
+  isImageUploading,
+}) {
   const spin = keyframes`
   from {
     transform: rotate(0deg) scale(0.7);
@@ -56,28 +62,42 @@ export default function ActionButtonsBar({ handleSync, handleImageUpload }) {
         sx={{ flex: '1 1 70%', display: 'flex', columnGap: '15px' }}
         component="div"
       >
-        <Tooltip title="Upload Photo" placement="top">
-          <IconButton
-            color="primary"
-            aria-label="upload picture"
-            component="label"
-            sx={{
-              animation: `${bounce} 1s ease 2 running`,
-              '&:hover': {
-                animationPlayState: 'paused',
-                background: 'rgba(173, 216, 230, 0.5)',
-              },
-            }}
-          >
-            <input
-              hidden
-              accept="image/*"
-              type="file"
-              onChange={handleImageUpload}
+        <Box sx={{ position: 'relative' }}>
+          <Tooltip title="Upload Photo" placement="top">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="label"
+              sx={{
+                animation: `${bounce} 1s ease 2 running`,
+                '&:hover': {
+                  animationPlayState: 'paused',
+                  background: 'rgba(173, 216, 230, 0.5)',
+                },
+              }}
+            >
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                onChange={handleImageUpload}
+              />
+              <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+            </IconButton>
+          </Tooltip>
+          {isImageUploading && (
+            <CircularProgress
+              size={32}
+              sx={{
+                color: green[500],
+                position: 'absolute',
+                top: 3,
+                left: 3,
+                zIndex: 1,
+              }}
             />
-            <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-          </IconButton>
-        </Tooltip>
+          )}
+        </Box>
         <Tooltip title="Upload File" placement="top">
           <IconButton
             color="primary"

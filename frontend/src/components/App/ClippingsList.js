@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
@@ -24,6 +24,7 @@ export default function ClippingsList({
   isLoading,
 }) {
   const socket = useContext(SocketContext);
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   // const [latestImage, setLatestImage] = useState(null);
 
@@ -72,11 +73,13 @@ export default function ClippingsList({
   const handleImageUpload = (e) => {
     const imageFile = e.target?.files[0];
     console.log(imageFile);
+
     if (!isImageFile(imageFile)) {
       console.error('selected file is not an image');
       return;
     }
 
+    setIsImageUploading(true);
     const meta = {
       originalFilename: imageFile.name,
       format: imageFile.type.toLowerCase().split('/')[1],
@@ -92,6 +95,7 @@ export default function ClippingsList({
     const callback = (res) => {
       if (res.status === 'successful') {
         console.log('image upload successful');
+        setIsImageUploading(false);
         dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
       } else {
         console.error(res.status, res.data);
@@ -107,7 +111,7 @@ export default function ClippingsList({
       callback,
     );
     // reset input files
-    // e.target.files[0] = null;
+    // inputEl.current.reset();
     // console.log(e.target.files);
   };
 
@@ -131,6 +135,7 @@ export default function ClippingsList({
           <ActionButtonsBar
             handleSync={handleSync}
             handleImageUpload={handleImageUpload}
+            isImageUploading={isImageUploading}
           />
         )}
         {isLoading ? (
