@@ -14,6 +14,7 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
+import Skeleton from '@mui/material/Skeleton';
 
 import SocketContext from './SocketContext';
 
@@ -161,8 +162,10 @@ export default function ClippingDetails({
 
   const Image = ({
     _id,
+    thumbnail,
     format,
     originalFilename,
+    downloadLink,
     isPinned,
     resolution,
     size,
@@ -177,12 +180,21 @@ export default function ClippingDetails({
             alignItems: 'center',
           }}
         >
-          <Box
-            component="img"
-            src="https://placeholder.pics/svg/100x100/FFB01E"
-            alt="image thumbnail"
-            sx={{ maxWidthdth: '100%', marginRight: '5%' }}
-          />
+          {thumbnail ? (
+            <Box
+              component="img"
+              src="https://placeholder.pics/svg/260x100/FFB01E"
+              alt="image thumbnail"
+              sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
+            />
+          ) : (
+            <Skeleton
+              variant="rounded"
+              width={210}
+              height={118}
+              sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
+            />
+          )}
           <Box>
             <Typography variant="subtitle1" component="p">
               {originalFilename}
@@ -204,25 +216,32 @@ export default function ClippingDetails({
         >
           <Avatar variant="rounded">{originIcon}</Avatar>
           <ButtonGroup>
-            <Tooltip title="Copy">
-              <IconButton>
-                <ContentCopyOutlinedIcon />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Download">
-              <IconButton>
-                <DownloadOutlinedIcon />
-              </IconButton>
+              <span>
+                <IconButton disabled={Boolean(!downloadLink)}>
+                  <DownloadOutlinedIcon />
+                </IconButton>
+              </span>
             </Tooltip>
             <Tooltip title="Pin">
-              <IconButton onClick={() => togglePinned(_id, isPinned)}>
-                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={() => togglePinned(_id, isPinned)}
+                  disabled={Boolean(!downloadLink)}
+                >
+                  {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+                </IconButton>
+              </span>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton onClick={() => handleDelete(_id)}>
-                <DeleteOutlinedIcon />
-              </IconButton>
+              <span>
+                <IconButton
+                  onClick={() => handleDelete(_id)}
+                  disabled={Boolean(!downloadLink)}
+                >
+                  <DeleteOutlinedIcon />
+                </IconButton>
+              </span>
             </Tooltip>
           </ButtonGroup>
         </Box>

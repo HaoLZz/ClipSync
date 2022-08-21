@@ -16,6 +16,7 @@ const socket = io(URL, { autoConnect: false });
 export default function AppPage() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [socketError, setSocketError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [clippings, setClippings] = useState([]);
 
@@ -49,6 +50,7 @@ export default function AppPage() {
       socket.emit('clipping:list', user._id, (res) => {
         if (res.status === 'successful') {
           setClippings(res.data.reverse());
+          setIsLoading(false);
         } else {
           console.error(res.data);
           setSocketError('clipping:list failed');
@@ -119,12 +121,14 @@ export default function AppPage() {
             setLatestText={setLatestText}
             setSocketError={setSocketError}
             showActionButton={true}
+            isLoading={isLoading}
           />
           <ClippingsList
             clippings={pinnedClippings}
             setClippings={setClippings}
             showActionButton={false}
             setSocketErro={setSocketError}
+            isLoading={isLoading}
           />
         </Tabs>
       </SocketContext.Provider>

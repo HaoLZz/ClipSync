@@ -35,3 +35,8 @@ export function formateFileSize(bytes, si = true, dp = 1) {
   );
   return bytes.toFixed(dp) + ' ' + units[u];
 }
+
+export function randomHeight(min = 1, max = 3, baseHeight = 100) {
+  const height = (Math.floor(Math.random() * (max - min + 1)) + min) * 50;
+  return `${height}px`;
+}

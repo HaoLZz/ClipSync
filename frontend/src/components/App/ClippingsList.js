@@ -1,9 +1,16 @@
 import React, { useContext } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import ClippingDetails from './ClippingDetails';
 import { getClipboardText } from '../../utils/clipboard';
-import { validURL, isImageFile, formateFileSize } from '../../utils/utils';
+import {
+  validURL,
+  isImageFile,
+  formateFileSize,
+  randomHeight,
+} from '../../utils/utils';
 import SocketContext from './SocketContext';
 import ActionButtonsBar from './ActionButtonsBar';
 
@@ -14,6 +21,7 @@ export default function ClippingsList({
   setLatestText,
   setSocketError,
   showActionButton,
+  isLoading,
 }) {
   const socket = useContext(SocketContext);
 
@@ -99,6 +107,19 @@ export default function ClippingsList({
     );
   };
 
+  const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(
+    (i) => {
+      return (
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={randomHeight()}
+          key={i}
+        />
+      );
+    },
+  );
+
   return (
     <>
       <Container component="main" maxWidth="md">
@@ -108,24 +129,28 @@ export default function ClippingsList({
             handleImageUpload={handleImageUpload}
           />
         )}
-        <Box
-          sx={{
-            marginTop: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            position: 'relative',
-          }}
-        >
-          {clippings.map((clipping) => (
-            <ClippingDetails
-              clipping={clipping}
-              setClippings={setClippings}
-              setSocketError={setSocketError}
-              key={clipping._id}
-            />
-          ))}
-        </Box>
+        {isLoading ? (
+          <Stack spacing={2}>{placeholderClippings}</Stack>
+        ) : (
+          <Box
+            sx={{
+              marginTop: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+          >
+            {clippings.map((clipping) => (
+              <ClippingDetails
+                clipping={clipping}
+                setClippings={setClippings}
+                setSocketError={setSocketError}
+                key={clipping._id}
+              />
+            ))}
+          </Box>
+        )}
       </Container>
     </>
   );
