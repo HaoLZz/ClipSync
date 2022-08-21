@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import sharp from 'sharp';
 
 // @desc  Create a new clipping
 // @event clipping:create
@@ -67,14 +68,27 @@ const createImageClipping = async function (
     }`;
 
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-    const result = await writeFile(
-      path.join(__dirname, `../tmp/upload/${filenameToSave}`),
-      file,
-    );
+    const filePath = path.join(__dirname, `../tmp/upload/${filenameToSave}`);
+    await writeFile(filePath, file);
 
     callback({ status: 'successful', data: initialClipping });
     socket.to(user._id.toString()).emit('clipping:created', initialClipping);
+
+    const metadata = await sharp(file).metadata();
+    const thumbnailFilePath = path.join(
+      __dirname,
+      `../tmp/upload/thumbnail_${filenameToSave}`,
+    );
+    await sharp(file).resize({ width: 200 }).toFile(thumbnailFilePath);
+
+    const clipping = await Clipping.findById(initialClipping._id);
+    clipping.thumbnail = `thumbnail_${filenameToSave}`;
+    clipping.downloadLink = `${filenameToSave}`;
+    clipping.resolution = `${metadata.width} X ${metadata.height}`;
+    const imageClipping = await clipping.save();
+
+    socket.emit('clipping:updated', imageClipping);
+    socket.to(userId.toString()).emit('clipping:updated', imageClipping);
   } catch (err) {
     callback({ status: 'clipping:create_image failed', data: err });
   }
