@@ -69,13 +69,14 @@ export default function ClippingsList({
     // setLatestImage(imageBlob);
   };
 
-  const handleImageUpload = (imageFile) => {
+  const handleImageUpload = (e) => {
+    const imageFile = e.target?.files[0];
     console.log(imageFile);
     if (!isImageFile(imageFile)) {
       console.error('selected file is not an image');
       return;
     }
-    console.log(typeof imageFile.size);
+
     const meta = {
       originalFilename: imageFile.name,
       format: imageFile.type.toLowerCase().split('/')[1],
@@ -105,6 +106,9 @@ export default function ClippingsList({
       imageFile,
       callback,
     );
+    // reset input files
+    // e.target.files[0] = null;
+    // console.log(e.target.files);
   };
 
   const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(

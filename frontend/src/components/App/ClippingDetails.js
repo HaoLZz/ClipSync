@@ -183,7 +183,7 @@ export default function ClippingDetails({
           {thumbnail ? (
             <Box
               component="img"
-              src="https://placeholder.pics/svg/260x100/FFB01E"
+              src={thumbnail}
               alt="image thumbnail"
               sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
             />

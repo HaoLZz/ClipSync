@@ -73,7 +73,7 @@ export default function ActionButtonsBar({ handleSync, handleImageUpload }) {
               hidden
               accept="image/*"
               type="file"
-              onChange={(e) => handleImageUpload(e.target?.files[0])}
+              onChange={handleImageUpload}
             />
             <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
           </IconButton>

@@ -21,13 +21,15 @@ import {
 import { socketAuth } from './middleware/authMiddleware.js';
 
 config();
-
 connectDB();
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'tmp/upload')));
 
 app.get('/', (req, res) => {
   res.send('API is running');
@@ -38,7 +40,6 @@ app.use(notFound);
 
 app.use(errorHandler);
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const server = https.createServer(
   {
     cert: fs.readFileSync(path.join(__dirname, '/.cert/server.crt')),
@@ -51,6 +52,7 @@ const io = new Server(server, {
   cors: {
     origin: 'https://localhost:3000',
   },
+  maxHttpBufferSize: 1e8,
 });
 
 io.use(socketAuth);
