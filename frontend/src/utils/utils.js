@@ -9,11 +9,24 @@ export function validURL(str) {
 }
 
 export function isImageFile(file) {
+  // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+  const fileTypes = [
+    'image/apng',
+    'image/bmp',
+    'image/gif',
+    'image/jpeg',
+    'image/pjpeg',
+    'image/png',
+    'image/svg+xml',
+    'image/tiff',
+    'image/webp',
+    'image/x-icon',
+  ];
   if (!file) {
     console.error('file is empty');
     return false;
   }
-  return file.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|bmp|BMP)$/);
+  return fileTypes.includes(file.type);
 }
 
 export function formateFileSize(bytes, si = true, dp = 1) {

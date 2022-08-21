@@ -15,6 +15,7 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
+import AsyncImage from '../UI/AsyncImage';
 
 import SocketContext from './SocketContext';
 
@@ -157,6 +158,14 @@ export default function ClippingDetails({
     resolution,
     size,
   }) => {
+    let imageSkeltonHeight = null;
+    if (resolution) {
+      const ratio = Number(resolution.trim().split('X')[0]) / 200;
+      imageSkeltonHeight = Math.ceil(
+        Number(resolution.trim().split('X')[1]) / ratio,
+      );
+    }
+
     return (
       <>
         <Box
@@ -169,16 +178,22 @@ export default function ClippingDetails({
         >
           {thumbnail ? (
             <Box
-              component="img"
-              src={thumbnail}
-              alt="image thumbnail"
+              component="div"
               sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-            />
+            >
+              <AsyncImage
+                src={thumbnail}
+                alt="image thumbnail"
+                imageSkeltonHeight={imageSkeltonHeight}
+                imageSkeltonWidth={200}
+              />
+            </Box>
           ) : (
             <Skeleton
               variant="rounded"
               width={210}
               height={118}
+              animation="wave"
               sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
             />
           )}
