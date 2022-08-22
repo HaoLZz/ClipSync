@@ -22,8 +22,8 @@ import Tooltip from '@mui/material/Tooltip';
 import withRouter from '../UI/withRouter';
 
 const drawerWidth = 240;
-const navItems = ['Home', 'Support', 'Log out'];
-const navUrls = ['/', '/support', '/logout'];
+const navItems = ['FAQ', 'Support', 'Log out'];
+const navUrls = ['/faq', '/support', '/logout'];
 
 const ListItemRouter = withRouter(ListItem);
 
