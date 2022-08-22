@@ -33,7 +33,7 @@ export default function ClippingsList({
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [isFileUploading, setIsFileUploading] = useState(false);
   // get clipping origin from useragent
-  const { origin } = getOrigin(user.useragent);
+  const { origin } = getOrigin(user.useragent) || {};
 
   // const [latestImage, setLatestImage] = useState(null);
 
@@ -170,7 +170,7 @@ export default function ClippingsList({
       e.target.value = null;
       console.log(e.target.value);
     },
-    [dispatch, setSocketError, socket],
+    [dispatch, setSocketError, socket, origin],
   );
 
   const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(

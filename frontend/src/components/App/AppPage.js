@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import io from 'socket.io-client';
 import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
 import AlertDialog from './AlertDialog';
@@ -47,7 +49,8 @@ export default function AppPage() {
     socket.connect();
 
     socket.on('connect_error', (err) => {
-      setSocketError(err.message);
+      setSocketError('Socket Connection Lost');
+      console.error(err.message);
       setIsConnected(false);
     });
 
@@ -101,9 +104,28 @@ export default function AppPage() {
           <Collapse in={openMessage}>
             <Message
               severity="error"
-              title="Error"
+              title="Clipboard Permissions Required"
               handleClose={() => setOpenMessage(false)}
             >{`${permissionError.name}: ${permissionError.message}`}</Message>
+          </Collapse>
+        )}
+        {socketError && (
+          <Collapse in={openMessage}>
+            <Alert
+              severity="error"
+              action={
+                <Button
+                  onClick={() => setOpenMessage(false)}
+                  color="inherit"
+                  size="small"
+                >
+                  Retry
+                </Button>
+              }
+              sx={{ textAlign: 'center' }}
+            >
+              {`${socketError}`}
+            </Alert>
           </Collapse>
         )}
         <Tabs tabLabels={tabLabels}>
