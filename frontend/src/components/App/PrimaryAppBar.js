@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useLocation, Navigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -19,11 +21,19 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Tooltip from '@mui/material/Tooltip';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 import withRouter from '../UI/withRouter';
+import UserAvatar from './UserAvatar';
+
+import { useAuth } from '../Users/AuthContext';
+import { useUser } from '../Users/UserContext';
+import SocketContext from './SocketContext';
 
 const drawerWidth = 240;
-const navItems = ['FAQ', 'Support', 'Log out'];
-const navUrls = ['/faq', '/support', '/logout'];
+const navItems = ['FAQ', 'Support', 'Donate'];
+const navUrls = ['/faq', '/support', '/sponsor'];
 
 const ListItemRouter = withRouter(ListItem);
 
@@ -33,6 +43,11 @@ function PrimaryAppBar(props) {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const { signout } = useAuth();
+  const location = useLocation();
+  const [user, setUser] = useUser();
+  const socket = useContext(SocketContext);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -96,8 +111,27 @@ function PrimaryAppBar(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Avatar sx={{ width: 24, height: 24, marginRight: '5px' }} />
+        <ListItemText primary="Profile" />
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Avatar sx={{ width: 24, height: 24, marginRight: '5px' }} />
+        <ListItemText primary="My account" />
+      </MenuItem>
+      <Divider />
+      <MenuItem>
+        <ListItemIcon>
+          <Settings fontSize="small" />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+      <MenuItem>
+        <ListItemIcon>
+          <Logout fontSize="small" />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -138,7 +172,7 @@ function PrimaryAppBar(props) {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -150,13 +184,25 @@ function PrimaryAppBar(props) {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
+      <MenuItem>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <Logout />
+        </IconButton>
+        <p> Logout</p>
+      </MenuItem>
     </Menu>
   );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar component="nav" sx={{ padding: '5px 30px' }}>
           <IconButton
             size="large"
             edge="start"
@@ -179,7 +225,7 @@ function PrimaryAppBar(props) {
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Tooltip title="Message">
               <IconButton
-                size="large"
+                sx={{ width: 60, height: 60 }}
                 aria-label="show 4 new mails"
                 color="inherit"
               >
@@ -190,7 +236,7 @@ function PrimaryAppBar(props) {
             </Tooltip>
             <Tooltip title="Notifications">
               <IconButton
-                size="large"
+                sx={{ width: 60, height: 60 }}
                 aria-label="show 17 new notifications"
                 color="inherit"
               >
@@ -209,7 +255,7 @@ function PrimaryAppBar(props) {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
-                <AccountCircle />
+                <UserAvatar username={user.name} />
               </IconButton>
             </Tooltip>
           </Box>
