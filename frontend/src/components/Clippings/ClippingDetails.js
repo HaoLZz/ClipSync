@@ -9,13 +9,13 @@ import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
-import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
 
 import ImageClipping from './ImageClipping';
+import FileClipping from './FileClipping';
 
 import SocketContext from '../App/SocketContext';
 
@@ -150,61 +150,6 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
     );
   });
 
-  const File = React.memo(({ _id, format, content, isPinned, size }) => {
-    return (
-      <>
-        <Box
-          component="div"
-          sx={{
-            marginBottom: '15px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar
-            src="https://placeholder.pics/svg/48x48/FFB01E-FF6DC4"
-            alt="file thumbnail"
-            variant="square"
-            sx={{ marginRight: '5%' }}
-          />
-          <Box>
-            <Typography variant="subtitle1" component="p">
-              {content}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {format}
-            </Typography>
-            <Typography variant="subtitle1" component="p">
-              {size}
-            </Typography>
-          </Box>
-        </Box>
-        <Box
-          component="div"
-          sx={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Avatar variant="rounded">{originIcon}</Avatar>
-          <ButtonGroup>
-            <Tooltip title="Download">
-              <IconButton>
-                <DownloadOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Pin">
-              <IconButton onClick={() => togglePinned(_id, isPinned)}>
-                {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton onClick={() => handleDelete(_id)}>
-                <DeleteOutlinedIcon />
-              </IconButton>
-            </Tooltip>
-          </ButtonGroup>
-        </Box>
-      </>
-    );
-  });
   return (
     <>
       <Card sx={{ padding: '15px 25px', width: '100%', marginBottom: '20px' }}>
@@ -218,7 +163,14 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
             togglePinned={togglePinned}
           />
         )}
-        {clipping.type === 'File' && <File {...clipping} />}
+        {clipping.type === 'File' && (
+          <FileClipping
+            {...clipping}
+            originIcon={originIcon}
+            handleDelete={handleDelete}
+            togglePinned={togglePinned}
+          />
+        )}
       </Card>
     </>
   );
