@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
 import cors from 'cors';
+import useragent from 'express-useragent';
 import { fileURLToPath } from 'url';
 import { config } from 'dotenv';
 import connectDB from './config/db.js';
@@ -33,6 +34,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
+app.use(useragent.express());
 
 app.use(
   '/download/',
