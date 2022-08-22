@@ -113,7 +113,8 @@ export default function ClippingsList({
       );
       // reset input files
       // inputEl.current.reset();
-      // console.log(e.target.files);
+      e.target.value = null;
+      console.log(e.target.value);
     },
     [dispatch, setSocketError, socket],
   );

@@ -24,7 +24,7 @@ function AsyncImage({
     }
   }, [src]);
   if (loadedSrc === src) {
-    return <img src={src} alt={alt} {...props} />;
+    return <img src={src} alt={alt} {...props} width="100%" />;
   }
   return (
     <Skeleton
