@@ -5,10 +5,10 @@ import PrimaryAppBar from './PrimaryAppBar';
 import Tabs from '../UI/Tabs';
 import AlertDialog from './AlertDialog';
 import Message from '../UI/Message';
-import ClippingsList from './ClippingsList';
+import ClippingsList from '../Clippings/ClippingsList';
 import usePermissions from './usePermissions';
 import { useUser } from '../Users/UserContext';
-import clippingsReducer from './clippingsReducer';
+import clippingsReducer from '../Clippings/clippingsReducer';
 import SocketContext from './SocketContext';
 
 const URL = process.env.REACT_APP_SOCKET_URL;

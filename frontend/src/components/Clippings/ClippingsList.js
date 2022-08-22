@@ -11,8 +11,8 @@ import {
   formateFileSize,
   randomHeight,
 } from '../../utils/utils';
-import SocketContext from './SocketContext';
-import ActionButtonsBar from './ActionButtonsBar';
+import SocketContext from '../App/SocketContext';
+import ActionButtonsBar from '../App/ActionButtonsBar';
 
 export default function ClippingsList({
   clippings,

@@ -17,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import ImageClipping from './ImageClipping';
 
-import SocketContext from './SocketContext';
+import SocketContext from '../App/SocketContext';
 
 function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const socket = useContext(SocketContext);
