@@ -3,9 +3,9 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
-import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
-import TabletMacOutlinedIcon from '@mui/icons-material/TabletMacOutlined';
-import PhoneIphoneOutlinedIcon from '@mui/icons-material/PhoneIphoneOutlined';
+import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
+import TabletMacIcon from '@mui/icons-material/TabletMac';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
@@ -22,11 +22,11 @@ import SocketContext from '../App/SocketContext';
 function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const socket = useContext(SocketContext);
 
-  const originList = ['desktop', 'tablet', 'phone'];
+  const originList = ['desktop', 'tablet', 'mobile'];
   const iconList = [
-    <DesktopWindowsOutlinedIcon />,
-    <TabletMacOutlinedIcon />,
-    <PhoneIphoneOutlinedIcon />,
+    <DesktopWindowsIcon fontSize="medium" sx={{ color: '#c7522a' }} />,
+    <TabletMacIcon fontSize="medium" sx={{ color: '#58508d' }} />,
+    <PhoneIphoneIcon fontSize="medium" sx={{ color: '#003f5c' }} />,
   ];
   const index = originList.findIndex((origin) => origin === clipping.origin);
 
@@ -79,7 +79,9 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
           component="div"
           sx={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <Avatar variant="rounded">{originIcon}</Avatar>
+          <Avatar variant="rounded" sx={{ width: '36px', height: '36px' }}>
+            {originIcon}
+          </Avatar>
           <ButtonGroup>
             <Tooltip title="Copy">
               <IconButton>

@@ -7,6 +7,8 @@ import generateToken from '../utils/generateToken.js';
 // @access Public
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  const { isMobile, isTablet, isDesktop, isChrome, platform, os, browser } =
+    req.useragent;
 
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
@@ -16,6 +18,15 @@ const authUser = asyncHandler(async (req, res) => {
       email: user.email,
       grantPermissions: user.grantPermissions,
       token: generateToken(user._id),
+      useragent: {
+        isMobile,
+        isTablet,
+        isDesktop,
+        isChrome,
+        platform,
+        os,
+        browser,
+      },
     });
   } else {
     res.status(401);

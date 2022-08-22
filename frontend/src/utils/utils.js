@@ -90,3 +90,29 @@ export function randomHeight(min = 1, max = 3, baseHeight = 100) {
   const height = (Math.floor(Math.random() * (max - min + 1)) + min) * 50;
   return `${height}px`;
 }
+
+export function getOrigin(useragent) {
+  if (!useragent) {
+    console.error('useragent is missing');
+    return;
+  }
+
+  if (!useragent.isChrome) {
+    console.error('Browser is not Chrome');
+    return;
+  }
+
+  const origin = useragent.isDesktop
+    ? 'desktop'
+    : useragent.isTablet
+    ? 'tablet'
+    : useragent.isMobile
+    ? 'mobile'
+    : '';
+
+  return {
+    origin,
+    platform: useragent.platform,
+    os: useragent.os,
+  };
+}
