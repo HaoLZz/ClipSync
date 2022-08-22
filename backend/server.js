@@ -21,6 +21,7 @@ import {
   listClipping,
 } from './controllers/clippingController.js';
 import { socketAuth } from './middleware/authMiddleware.js';
+import { download } from './middleware/downloadMiddleware.js';
 
 config();
 connectDB();
@@ -32,6 +33,12 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
+
+app.use(
+  '/download/',
+  download,
+  express.static(path.join(__dirname, 'tmp/download')),
+);
 
 app.use('/thumbnail/', express.static(path.join(__dirname, 'tmp/thumbnail')));
 
@@ -78,10 +85,14 @@ io.on('connection', (socket) => {
 
   socket.emit('user:connected', userConnections);
   console.log('pool:', connectionsPool.size);
-  console.log(`Socket ${socket.id} from user ${userId} connected`);
+  console.log(
+    `Socket ${socket.id} from user ${userId} connected`.green.underline,
+  );
 
-  socket.on('disconnect', () => {
-    console.log(`Socket:${socket.id} disconnected`);
+  socket.on('disconnect', (reason) => {
+    console.log(
+      `Socket:${socket.id} disconnected for reason:${reason}`.blue.underline,
+    );
     userConnections = userConnections.filter(
       (connection) => connection !== socket.id,
     );
