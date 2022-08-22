@@ -1,9 +1,11 @@
 import Clipping from '../models/clippingModel.js';
 import User from '../models/userModel.js';
-import { writeFile } from 'fs/promises';
+import { writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // @desc  Create a new clipping
 // @event clipping:create
@@ -63,16 +65,16 @@ const createImageClipping = async function (
       user,
     });
 
+    // send initialClipping without thumbnail back
+    socket.emit('clipping:created', initialClipping);
+    socket.to(user._id.toString()).emit('clipping:created', initialClipping);
+
     const filenameToSave = `${initialClipping._id.toString()}.${
       initialClipping.format
     }`;
 
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const filePath = path.join(__dirname, `../tmp/download/${filenameToSave}`);
     await writeFile(filePath, file);
-
-    socket.emit('clipping:created', initialClipping);
-    socket.to(user._id.toString()).emit('clipping:created', initialClipping);
 
     const metadata = await sharp(file).metadata();
     const thumbnailFilePath = path.join(
@@ -88,6 +90,7 @@ const createImageClipping = async function (
 
     const imageClipping = await clipping.save();
 
+    // when thumbnail is ready, update clients with data
     callback({ status: 'successful', data: imageClipping });
     socket.to(userId.toString()).emit('clipping:updated', imageClipping);
   } catch (err) {
@@ -119,13 +122,14 @@ const createFileClipping = async function (clippingInfo, meta, file, callback) {
       user,
     });
 
+    // send initialClipping without downloadLink back
     socket.emit('clipping:created', initialClipping);
     socket.to(user._id.toString()).emit('clipping:created', initialClipping);
 
     const filenameToSave = `${initialClipping._id.toString()}.${
       initialClipping.format
     }`;
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
     const filePath = path.join(__dirname, `../tmp/download/${filenameToSave}`);
     await writeFile(filePath, file);
 
@@ -134,6 +138,7 @@ const createFileClipping = async function (clippingInfo, meta, file, callback) {
 
     const fileClipping = await clipping.save();
 
+    // when downloadLink is ready, update clients with data
     callback({ status: 'successful', data: fileClipping });
     socket.to(userId.toString()).emit('clipping:updated', fileClipping);
   } catch (err) {
@@ -191,19 +196,41 @@ const deleteClipping = async function (clippingId, callback) {
   const socket = this;
   const userId = socket.user._id;
   try {
-    const deletedClipping = await Clipping.findByIdAndDelete(clippingId).select(
-      '_id',
-    );
+    const deletedClipping = await Clipping.findByIdAndDelete(clippingId);
 
-    if (deletedClipping) {
-      callback({ status: 'successful', data: deletedClipping._id });
-      socket
-        .to(userId.toString())
-        .emit('clipping:deleted', deletedClipping._id);
-    } else {
+    if (!deletedClipping) {
       throw new Error(`Clipping with id${clippingId} not found`);
     }
+
+    if (deletedClipping.type === 'File') {
+      const downloadFilePath = path.join(
+        __dirname,
+        `../tmp/${deletedClipping.downloadLink}`,
+      );
+      await unlink(downloadFilePath);
+      console.log(`Deleted ${deletedClipping.downloadLink}`);
+    }
+
+    if (deletedClipping.type === 'Image') {
+      const downloadFilePath = path.join(
+        __dirname,
+        `../tmp/${deletedClipping.downloadLink}`,
+      );
+      await unlink(downloadFilePath);
+      console.log(`Deleted ${deletedClipping.downloadLink}`);
+
+      const thumbnailFilePath = path.join(
+        __dirname,
+        `../tmp/${deletedClipping.thumbnail}`,
+      );
+      await unlink(thumbnailFilePath);
+      console.log(`Deleted ${deletedClipping.thumbnail}`);
+    }
+
+    callback({ status: 'successful', data: deletedClipping._id });
+    socket.to(userId.toString()).emit('clipping:deleted', deletedClipping._id);
   } catch (err) {
+    console.error('clipping delete error:', err);
     callback({ status: 'clipping:delete failed', data: err });
   }
 };
