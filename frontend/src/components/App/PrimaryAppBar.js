@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -45,9 +45,23 @@ function PrimaryAppBar(props) {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const { signout } = useAuth();
-  const location = useLocation();
+  const navigate = useNavigate();
   const [user, setUser] = useUser();
   const socket = useContext(SocketContext);
+
+  const handleLogout = () => {
+    signout();
+    localStorage.clear();
+    setUser((user) => {
+      return { _id: user._id };
+    });
+    socket.close((reason) => {
+      console.log('User logout', reason);
+    });
+
+    // Upon logout, redirect to home page
+    navigate('/sign-in', { replace: true });
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -126,7 +140,7 @@ function PrimaryAppBar(props) {
         </ListItemIcon>
         Settings
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={handleLogout}>
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>
@@ -191,6 +205,7 @@ function PrimaryAppBar(props) {
           aria-controls="primary-account-menu"
           aria-haspopup="true"
           color="inherit"
+          onClick={handleLogout}
         >
           <Logout />
         </IconButton>
