@@ -9,6 +9,7 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
+import { PdfIcon, DocIcon, TxtIcon } from '../UI/SvgIcons';
 
 function FileClipping({
   _id,
@@ -21,6 +22,14 @@ function FileClipping({
   togglePinned,
   handleDelete,
 }) {
+  const fileIcons = {
+    pdf: <PdfIcon sx={{ fontSize: 64 }} />,
+    doc: <DocIcon sx={{ fontSize: 64 }} />,
+    docx: <DocIcon sx={{ fontSize: 64 }} />,
+    txt: <TxtIcon sx={{ fontSize: 64 }} />,
+  };
+  const fileIcon = fileIcons[format];
+
   return (
     <>
       <Box
@@ -31,12 +40,9 @@ function FileClipping({
           alignItems: 'center',
         }}
       >
-        <Avatar
-          src="https://placeholder.pics/svg/48x48/FFB01E-FF6DC4"
-          alt="file thumbnail"
-          variant="square"
-          sx={{ marginRight: '5%' }}
-        />
+        <Box component="div" sx={{ marginRight: '5%' }}>
+          {fileIcon}
+        </Box>
         <Box>
           <Typography variant="subtitle1" component="p">
             {originalFilename}
