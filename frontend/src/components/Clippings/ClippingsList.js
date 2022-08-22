@@ -103,6 +103,7 @@ export default function ClippingsList({
           dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
         } else {
           console.error(res.status, res.data);
+          setIsImageUploading(false);
           setSocketError(res.data);
         }
       };
@@ -148,10 +149,11 @@ export default function ClippingsList({
       const callback = (res) => {
         if (res.status === 'successful') {
           console.log('file upload successful');
-          setIsImageUploading(false);
+          setIsFileUploading(false);
           dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
         } else {
           console.error(res.status, res.data);
+          setIsFileUploading(false);
           setSocketError(res.data);
         }
       };
@@ -187,6 +189,7 @@ export default function ClippingsList({
             handleImageUpload={handleImageUpload}
             handleFileUpload={handleFileUpload}
             isImageUploading={isImageUploading}
+            isFileUploading={isFileUploading}
           />
         )}
         {isLoading ? (

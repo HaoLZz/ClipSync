@@ -77,7 +77,6 @@ export default function AppPage() {
     return () => {
       socket.removeAllListeners();
       socket.offAny();
-      socket.disconnect();
     };
   }, [user._id, isConnected, user.token]);
 

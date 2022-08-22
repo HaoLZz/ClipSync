@@ -16,6 +16,7 @@ function ActionButtonsBar({
   handleImageUpload,
   handleFileUpload,
   isImageUploading,
+  isFileUploading,
 }) {
   const spin = keyframes`
   from {
@@ -99,27 +100,41 @@ function ActionButtonsBar({
             />
           )}
         </Box>
-        <Tooltip title="Upload File" placement="top">
-          <IconButton
-            color="primary"
-            aria-label="upload file"
-            component="label"
-            sx={{
-              '&:hover': {
-                background: 'rgba(173, 216, 230, 0.5)',
-              },
-            }}
-            onClick={() => console.log('file upload button')}
-          >
-            <input
-              hidden
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
-              type="file"
-              onChange={handleFileUpload}
+        <Box sx={{ position: 'relative' }}>
+          <Tooltip title="Upload File" placement="top">
+            <IconButton
+              color="primary"
+              aria-label="upload file"
+              component="label"
+              sx={{
+                '&:hover': {
+                  background: 'rgba(173, 216, 230, 0.5)',
+                },
+              }}
+              onClick={() => console.log('file upload button')}
+            >
+              <input
+                hidden
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+                type="file"
+                onChange={handleFileUpload}
+              />
+              <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+            </IconButton>
+          </Tooltip>
+          {isFileUploading && (
+            <CircularProgress
+              size={32}
+              sx={{
+                color: green[500],
+                position: 'absolute',
+                top: 3,
+                left: 3,
+                zIndex: 1,
+              }}
             />
-            <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-          </IconButton>
-        </Tooltip>
+          )}
+        </Box>
         <Tooltip title="Clear All" placement="top">
           <IconButton
             color="warning"
