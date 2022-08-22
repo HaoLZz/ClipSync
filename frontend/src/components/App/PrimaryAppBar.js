@@ -50,6 +50,7 @@ function PrimaryAppBar(props) {
   const socket = useContext(SocketContext);
 
   const handleLogout = () => {
+    console.log('user log out');
     signout();
     localStorage.clear();
     setUser((user) => {
@@ -198,14 +199,13 @@ function PrimaryAppBar(props) {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={handleLogout}>
         <IconButton
           size="large"
-          aria-label="account of current user"
+          aria-label="user logout"
           aria-controls="primary-account-menu"
           aria-haspopup="true"
           color="inherit"
-          onClick={handleLogout}
         >
           <Logout />
         </IconButton>
