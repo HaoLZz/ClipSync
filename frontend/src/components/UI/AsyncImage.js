@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 
-export default function AsyncImage({
+function AsyncImage({
   src,
   alt,
   imageSkeltonHeight,
@@ -36,3 +36,5 @@ export default function AsyncImage({
     />
   );
 }
+
+export default React.memo(AsyncImage);

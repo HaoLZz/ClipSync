@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
@@ -14,8 +14,8 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
-import Skeleton from '@mui/material/Skeleton';
-import AsyncImage from '../UI/AsyncImage';
+
+import ImageClipping from './ImageClipping';
 
 import SocketContext from './SocketContext';
 
@@ -32,36 +32,42 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
 
   const originIcon = iconList[index];
 
-  const togglePinned = (clippingId, isPinned) => {
-    const callback = (res) => {
-      if (res.status === 'successful') {
-        dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
-      } else {
-        console.error('clipping:update failed');
-        setSocketError(res.data);
-      }
-    };
+  const togglePinned = useCallback(
+    (clippingId, isPinned) => {
+      const callback = (res) => {
+        if (res.status === 'successful') {
+          dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
+        } else {
+          console.error('clipping:update failed');
+          setSocketError(res.data);
+        }
+      };
 
-    socket.emit(
-      'clipping:update',
-      clippingId,
-      { isPinned: !isPinned },
-      callback,
-    );
-  };
+      socket.emit(
+        'clipping:update',
+        clippingId,
+        { isPinned: !isPinned },
+        callback,
+      );
+    },
+    [dispatch, setSocketError, socket],
+  );
 
-  const handleDelete = (clippingId) => {
-    const callback = (res) => {
-      if (res.status === 'successful') {
-        dispatch({ type: 'DELETE_CLIPPING', payload: res.data });
-      } else {
-        console.error('clipping:delete failed');
-        setSocketError(res.data);
-      }
-    };
+  const handleDelete = useCallback(
+    (clippingId) => {
+      const callback = (res) => {
+        if (res.status === 'successful') {
+          dispatch({ type: 'DELETE_CLIPPING', payload: res.data });
+        } else {
+          console.error('clipping:delete failed');
+          setSocketError(res.data);
+        }
+      };
 
-    socket.emit('clipping:delete', clippingId, callback);
-  };
+      socket.emit('clipping:delete', clippingId, callback);
+    },
+    [dispatch, setSocketError, socket],
+  );
 
   const Text = React.memo(({ content, isPinned, _id }) => {
     return (
@@ -144,111 +150,6 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
     );
   });
 
-  const Image = React.memo(
-    ({
-      _id,
-      thumbnail,
-      format,
-      originalFilename,
-      downloadLink,
-      isPinned,
-      resolution,
-      size,
-    }) => {
-      let imageSkeltonHeight = null;
-      if (resolution) {
-        const ratio = Number(resolution.trim().split('X')[0]) / 200;
-        imageSkeltonHeight = Math.ceil(
-          Number(resolution.trim().split('X')[1]) / ratio,
-        );
-      }
-
-      return (
-        <>
-          <Box
-            component="div"
-            sx={{
-              marginBottom: '15px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {thumbnail ? (
-              <Box
-                component="div"
-                sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-              >
-                <AsyncImage
-                  src={thumbnail}
-                  alt="image thumbnail"
-                  imageSkeltonHeight={imageSkeltonHeight}
-                  imageSkeltonWidth={200}
-                />
-              </Box>
-            ) : (
-              <Skeleton
-                variant="rounded"
-                width={210}
-                height={118}
-                animation="wave"
-                sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-              />
-            )}
-            <Box>
-              <Typography variant="subtitle1" component="p">
-                {originalFilename}
-              </Typography>
-              <Typography variant="subtitle1" component="p">
-                {resolution}
-              </Typography>
-              <Typography variant="subtitle1" component="p">
-                {format}
-              </Typography>
-              <Typography variant="subtitle1" component="p">
-                {size}
-              </Typography>
-            </Box>
-          </Box>
-          <Box
-            component="div"
-            sx={{ display: 'flex', justifyContent: 'space-between' }}
-          >
-            <Avatar variant="rounded">{originIcon}</Avatar>
-            <ButtonGroup>
-              <Tooltip title="Download">
-                <span>
-                  <IconButton disabled={Boolean(!downloadLink)}>
-                    <DownloadOutlinedIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Pin">
-                <span>
-                  <IconButton
-                    onClick={() => togglePinned(_id, isPinned)}
-                    disabled={Boolean(!downloadLink)}
-                  >
-                    {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
-                  </IconButton>
-                </span>
-              </Tooltip>
-              <Tooltip title="Delete">
-                <span>
-                  <IconButton
-                    onClick={() => handleDelete(_id)}
-                    disabled={Boolean(!downloadLink)}
-                  >
-                    <DeleteOutlinedIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </ButtonGroup>
-          </Box>
-        </>
-      );
-    },
-  );
-
   const File = React.memo(({ _id, format, content, isPinned, size }) => {
     return (
       <>
@@ -309,7 +210,14 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
       <Card sx={{ padding: '15px 25px', width: '100%', marginBottom: '20px' }}>
         {clipping.type === 'Text' && <Text {...clipping} />}
         {clipping.type === 'Link' && <Link {...clipping} />}
-        {clipping.type === 'Image' && <Image {...clipping} />}
+        {clipping.type === 'Image' && (
+          <ImageClipping
+            {...clipping}
+            originIcon={originIcon}
+            handleDelete={handleDelete}
+            togglePinned={togglePinned}
+          />
+        )}
         {clipping.type === 'File' && <File {...clipping} />}
       </Card>
     </>
