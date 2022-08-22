@@ -29,6 +29,7 @@ function FileClipping({
     txt: <TxtIcon sx={{ fontSize: 64 }} />,
   };
   const fileIcon = fileIcons[format];
+  const fileUrl = `${downloadLink}`;
 
   return (
     <>
@@ -62,7 +63,11 @@ function FileClipping({
         <Avatar variant="rounded">{originIcon}</Avatar>
         <ButtonGroup>
           <Tooltip title="Download">
-            <IconButton>
+            <IconButton
+              component="a"
+              href={fileUrl}
+              download={originalFilename}
+            >
               <DownloadOutlinedIcon />
             </IconButton>
           </Tooltip>
