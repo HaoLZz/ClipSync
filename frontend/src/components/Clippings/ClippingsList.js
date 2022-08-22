@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import ClippingDetails from './ClippingDetails';
+import ActionButtonsBar from '../App/ActionButtonsBar';
 import { getClipboardText } from '../../utils/clipboard';
 import {
   validURL,
@@ -12,9 +13,11 @@ import {
   formateFileSize,
   getExtension,
   randomHeight,
+  getOrigin,
 } from '../../utils/utils';
+
+import UserContext from '../Users/UserContext';
 import SocketContext from '../App/SocketContext';
-import ActionButtonsBar from '../App/ActionButtonsBar';
 
 export default function ClippingsList({
   clippings,
@@ -26,8 +29,11 @@ export default function ClippingsList({
   isLoading,
 }) {
   const socket = useContext(SocketContext);
+  const user = useContext(UserContext);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [isFileUploading, setIsFileUploading] = useState(false);
+  // get clipping origin from useragent
+  const { origin } = getOrigin(user.useragent);
 
   // const [latestImage, setLatestImage] = useState(null);
 
@@ -57,10 +63,10 @@ export default function ClippingsList({
 
     const payload =
       contentType === 'Text'
-        ? { origin: 'desktop', type: 'Text', content: text, isPinned: false }
+        ? { origin, type: 'Text', content: text, isPinned: false }
         : contentType === 'Link'
         ? {
-            origin: 'desktop',
+            origin,
             type: 'Link',
             url: text,
             isPinned: false,
@@ -71,7 +77,7 @@ export default function ClippingsList({
     socket.emit('clipping:create', payload, callback);
 
     // setLatestImage(imageBlob);
-  }, [dispatch, latestText, setLatestText, setSocketError, socket]);
+  }, [dispatch, latestText, setLatestText, setSocketError, socket, origin]);
 
   const handleImageUpload = useCallback(
     (e) => {
@@ -91,7 +97,7 @@ export default function ClippingsList({
       };
 
       const clippingInfo = {
-        origin: 'desktop',
+        origin,
         isPinned: false,
         type: 'Image',
       };
@@ -120,7 +126,7 @@ export default function ClippingsList({
       e.target.value = null;
       console.log(e.target.value);
     },
-    [dispatch, setSocketError, socket],
+    [dispatch, setSocketError, socket, origin],
   );
 
   const handleFileUpload = useCallback(
@@ -141,7 +147,7 @@ export default function ClippingsList({
       };
 
       const clippingInfo = {
-        origin: 'desktop',
+        origin,
         isPinned: false,
         type: 'File',
       };
