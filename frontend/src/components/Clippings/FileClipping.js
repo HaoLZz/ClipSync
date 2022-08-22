@@ -67,17 +67,24 @@ function FileClipping({
               component="a"
               href={fileUrl}
               download={originalFilename}
+              disabled={Boolean(!downloadLink)}
             >
               <DownloadOutlinedIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Pin">
-            <IconButton onClick={() => togglePinned(_id, isPinned)}>
+            <IconButton
+              onClick={() => togglePinned(_id, isPinned)}
+              disabled={Boolean(!downloadLink)}
+            >
               {isPinned ? <PushPinIcon /> : <PushPinOutlinedIcon />}
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(_id)}>
+            <IconButton
+              disabled={Boolean(!downloadLink)}
+              onClick={() => handleDelete(_id)}
+            >
               <DeleteOutlinedIcon />
             </IconButton>
           </Tooltip>

@@ -12,7 +12,13 @@ import clippingsReducer from '../Clippings/clippingsReducer';
 import SocketContext from './SocketContext';
 
 const URL = process.env.REACT_APP_SOCKET_URL;
-const socket = io(URL, { autoConnect: false });
+const socket = io(URL, {
+  autoConnect: false,
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: 99999,
+});
 
 export default function AppPage() {
   const [isConnected, setIsConnected] = useState(socket.connected);
