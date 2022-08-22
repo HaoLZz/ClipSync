@@ -68,7 +68,7 @@ const createImageClipping = async function (
     }`;
 
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const filePath = path.join(__dirname, `../tmp/upload/${filenameToSave}`);
+    const filePath = path.join(__dirname, `../tmp/download/${filenameToSave}`);
     await writeFile(filePath, file);
 
     socket.emit('clipping:created', initialClipping);
@@ -77,13 +77,13 @@ const createImageClipping = async function (
     const metadata = await sharp(file).metadata();
     const thumbnailFilePath = path.join(
       __dirname,
-      `../tmp/upload/thumbnail_${filenameToSave}`,
+      `../tmp/thumbnail/thumbnail_${filenameToSave}`,
     );
     await sharp(file).resize({ width: 200 }).toFile(thumbnailFilePath);
 
     const clipping = await Clipping.findById(initialClipping._id);
-    clipping.thumbnail = `thumbnail_${filenameToSave}`;
-    clipping.downloadLink = `${filenameToSave}`;
+    clipping.thumbnail = `thumbnail/thumbnail_${filenameToSave}`;
+    clipping.downloadLink = `download/${filenameToSave}`;
     clipping.resolution = `${metadata.width} X ${metadata.height}`;
 
     const imageClipping = await clipping.save();
@@ -126,11 +126,11 @@ const createFileClipping = async function (clippingInfo, meta, file, callback) {
       initialClipping.format
     }`;
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const filePath = path.join(__dirname, `../tmp/upload/${filenameToSave}`);
+    const filePath = path.join(__dirname, `../tmp/download/${filenameToSave}`);
     await writeFile(filePath, file);
 
     const clipping = await Clipping.findById(initialClipping._id);
-    clipping.downloadLink = `${filenameToSave}`;
+    clipping.downloadLink = `download/${filenameToSave}`;
 
     const fileClipping = await clipping.save();
 

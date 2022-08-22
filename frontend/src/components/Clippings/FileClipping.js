@@ -29,7 +29,7 @@ function FileClipping({
     txt: <TxtIcon sx={{ fontSize: 64 }} />,
   };
   const fileIcon = fileIcons[format];
-  const fileUrl = `${downloadLink}`;
+  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}/${downloadLink}`;
 
   return (
     <>
