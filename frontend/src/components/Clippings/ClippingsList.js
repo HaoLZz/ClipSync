@@ -8,7 +8,9 @@ import { getClipboardText } from '../../utils/clipboard';
 import {
   validURL,
   isImageFile,
+  isValidFile,
   formateFileSize,
+  getExtension,
   randomHeight,
 } from '../../utils/utils';
 import SocketContext from '../App/SocketContext';
@@ -25,6 +27,7 @@ export default function ClippingsList({
 }) {
   const socket = useContext(SocketContext);
   const [isImageUploading, setIsImageUploading] = useState(false);
+  const [isFileUploading, setIsFileUploading] = useState(false);
 
   // const [latestImage, setLatestImage] = useState(null);
 
@@ -119,6 +122,49 @@ export default function ClippingsList({
     [dispatch, setSocketError, socket],
   );
 
+  const handleFileUpload = useCallback(
+    (e) => {
+      const file = e.target?.files[0];
+      console.log(file);
+
+      if (!isValidFile(file)) {
+        console.error('selected file is not valid');
+        return;
+      }
+
+      setIsFileUploading(true);
+      const meta = {
+        originalFilename: file.name,
+        format: getExtension(file.name),
+        size: formateFileSize(file.size),
+      };
+
+      const clippingInfo = {
+        origin: 'desktop',
+        isPinned: false,
+        type: 'File',
+      };
+
+      const callback = (res) => {
+        if (res.status === 'successful') {
+          console.log('file upload successful');
+          setIsImageUploading(false);
+          dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
+        } else {
+          console.error(res.status, res.data);
+          setSocketError(res.data);
+        }
+      };
+
+      socket.emit('clipping:create_file', clippingInfo, meta, file, callback);
+      // reset input files
+
+      e.target.value = null;
+      console.log(e.target.value);
+    },
+    [dispatch, setSocketError, socket],
+  );
+
   const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(
     (i) => {
       return (
@@ -139,6 +185,7 @@ export default function ClippingsList({
           <ActionButtonsBar
             handleSync={handleSync}
             handleImageUpload={handleImageUpload}
+            handleFileUpload={handleFileUpload}
             isImageUploading={isImageUploading}
           />
         )}

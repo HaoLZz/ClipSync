@@ -11,7 +11,12 @@ import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 
-function ActionButtonsBar({ handleSync, handleImageUpload, isImageUploading }) {
+function ActionButtonsBar({
+  handleSync,
+  handleImageUpload,
+  handleFileUpload,
+  isImageUploading,
+}) {
   const spin = keyframes`
   from {
     transform: rotate(0deg) scale(0.7);
@@ -98,12 +103,20 @@ function ActionButtonsBar({ handleSync, handleImageUpload, isImageUploading }) {
           <IconButton
             color="primary"
             aria-label="upload file"
+            component="label"
             sx={{
               '&:hover': {
                 background: 'rgba(173, 216, 230, 0.5)',
               },
             }}
+            onClick={() => console.log('file upload button')}
           >
+            <input
+              hidden
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+              type="file"
+              onChange={handleFileUpload}
+            />
             <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
           </IconButton>
         </Tooltip>

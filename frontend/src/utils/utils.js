@@ -29,6 +29,43 @@ export function isImageFile(file) {
   return fileTypes.includes(file.type);
 }
 
+export function isValidFile(file) {
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+  const fileTypes = [
+    'application/pdf',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.rar',
+    'application/vnd.ms-excel',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/zip',
+    'application/x-7z-compressed',
+    'text/plain',
+  ];
+  if (!file) {
+    console.error('file is empty');
+    return false;
+  }
+  return fileTypes.includes(file.type);
+}
+
+/* https://stackoverflow.com/questions/190852/how-can-i-get-file-extensions-with-javascript/12900504#12900504 */
+
+export function getExtension(path) {
+  // extract file name from full path (supports `\\` and `/` separators)
+  var basename = path.split(/[\\/]/).pop(),
+    // get last position of `.`
+    pos = basename.lastIndexOf('.');
+
+  if (basename === '' || pos < 1)
+    // if file name is empty or `.` not found (-1) or comes first (0)
+    return '';
+  // extract extension ignoring `.`
+  return basename.slice(pos + 1);
+}
+
 export function formateFileSize(bytes, si = true, dp = 1) {
   const thresh = si ? 1000 : 1024;
   if (Math.abs(bytes) < thresh) {

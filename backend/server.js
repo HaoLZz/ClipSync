@@ -13,6 +13,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import {
   createClipping,
   createImageClipping,
+  createFileClipping,
   readClipping,
   updateClipping,
   deleteClipping,
@@ -89,6 +90,7 @@ io.on('connection', (socket) => {
 
   socket.on('clipping:create', createClipping);
   socket.on('clipping:create_image', createImageClipping);
+  socket.on('clipping:create_file', createFileClipping);
   socket.on('clipping:read', readClipping);
   socket.on('clipping:update', updateClipping);
   socket.on('clipping:delete', deleteClipping);
