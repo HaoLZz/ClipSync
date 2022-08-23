@@ -47,6 +47,16 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc  User logout
+// @route GET /api/users/logout
+// @access Public
+
+const logoutUser = asyncHandler(async (req, res) => {
+  const JWT_KEY = process.env.JWT_KEY_NAME || 'jwt';
+  res.clearCookie(JWT_KEY);
+  res.send('Log out successful');
+});
+
 // @desc  Register a new user
 // @route POST /api/users
 // @access Public
@@ -125,4 +135,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUserProfile, registerUser, updateUserProfile };
+export {
+  authUser,
+  logoutUser,
+  getUserProfile,
+  registerUser,
+  updateUserProfile,
+};
