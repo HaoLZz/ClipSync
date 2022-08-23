@@ -10,6 +10,7 @@ import { config } from 'dotenv';
 import connectDB from './config/db.js';
 import colors from 'colors';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import {
@@ -35,6 +36,7 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(useragent.express());
+app.use(cookieParser());
 
 app.use(
   '/download/',
@@ -65,7 +67,7 @@ const io = new Server(server, {
   cors: {
     origin: 'https://localhost:3000',
   },
-  maxHttpBufferSize: 1e8,
+  maxHttpBufferSize: 1e8, // 100MB
 });
 
 io.use(socketAuth);
@@ -74,6 +76,7 @@ io.on('connection', (socket) => {
   const connectionsPool = io.of('/').sockets;
   const userId = socket.user._id;
 
+  console.log(socket.handshake);
   // join a room under '<userId>'
   socket.join(userId.toString());
 
