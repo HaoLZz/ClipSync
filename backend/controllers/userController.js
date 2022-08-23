@@ -12,12 +12,25 @@ const authUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
-    res.json({
+    const token = generateToken(user._id);
+    const JWT_KEY = process.env.JWT_KEY_NAME || 'jwt';
+    // cookie expires after 5 hours
+    const expDate = new Date();
+    expDate.setHours(expDate.getHours() + 5);
+
+    res.cookie(JWT_KEY, `Bearer ${token}`, {
+      secure: true,
+      httpOnly: true,
+      expires: expDate,
+      sameSite: 'none',
+    });
+
+    res.send({
       _id: user._id,
       name: user.name,
       email: user.email,
       grantPermissions: user.grantPermissions,
-      token: generateToken(user._id),
+      token: token,
       useragent: {
         isMobile,
         isTablet,

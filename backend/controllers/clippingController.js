@@ -240,6 +240,7 @@ const deleteClipping = async function (clippingId, callback) {
 // @access Private
 
 const listClipping = async function (userId, callback) {
+  const socket = this;
   try {
     const user = await User.findById(userId);
 
