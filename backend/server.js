@@ -10,6 +10,7 @@ import { config } from 'dotenv';
 import connectDB from './config/db.js';
 import colors from 'colors';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import {
@@ -21,7 +22,7 @@ import {
   deleteClipping,
   listClipping,
 } from './controllers/clippingController.js';
-import { socketAuth } from './middleware/authMiddleware.js';
+import { socketAuth, protect } from './middleware/authMiddleware.js';
 import { download } from './middleware/downloadMiddleware.js';
 
 config();
@@ -35,14 +36,20 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(useragent.express());
+app.use(cookieParser());
 
 app.use(
   '/download/',
+  protect,
   download,
   express.static(path.join(__dirname, 'tmp/download')),
 );
 
-app.use('/thumbnail/', express.static(path.join(__dirname, 'tmp/thumbnail')));
+app.use(
+  '/thumbnail/',
+  protect,
+  express.static(path.join(__dirname, 'tmp/thumbnail')),
+);
 
 app.get('/', (req, res) => {
   res.send('API is running');
@@ -65,7 +72,7 @@ const io = new Server(server, {
   cors: {
     origin: 'https://localhost:3000',
   },
-  maxHttpBufferSize: 1e8,
+  maxHttpBufferSize: 1e8, // 100MB
 });
 
 io.use(socketAuth);
@@ -74,6 +81,7 @@ io.on('connection', (socket) => {
   const connectionsPool = io.of('/').sockets;
   const userId = socket.user._id;
 
+  console.log(socket.handshake);
   // join a room under '<userId>'
   socket.join(userId.toString());
 

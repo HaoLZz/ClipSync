@@ -12,12 +12,25 @@ const authUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
-    res.json({
+    const token = generateToken(user._id);
+    const JWT_KEY = process.env.JWT_KEY_NAME || 'jwt';
+    // cookie expires after 5 hours
+    const expDate = new Date();
+    expDate.setHours(expDate.getHours() + 5);
+
+    res.cookie(JWT_KEY, `Bearer ${token}`, {
+      secure: true,
+      httpOnly: true,
+      expires: expDate,
+      sameSite: 'none',
+    });
+
+    res.send({
       _id: user._id,
       name: user.name,
       email: user.email,
       grantPermissions: user.grantPermissions,
-      token: generateToken(user._id),
+      token: token,
       useragent: {
         isMobile,
         isTablet,
@@ -32,6 +45,16 @@ const authUser = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error('Invalid email or password');
   }
+});
+
+// @desc  User logout
+// @route GET /api/users/logout
+// @access Public
+
+const logoutUser = asyncHandler(async (req, res) => {
+  const JWT_KEY = process.env.JWT_KEY_NAME || 'jwt';
+  res.clearCookie(JWT_KEY);
+  res.send('Log out successful');
 });
 
 // @desc  Register a new user
@@ -112,4 +135,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUserProfile, registerUser, updateUserProfile };
+export {
+  authUser,
+  logoutUser,
+  getUserProfile,
+  registerUser,
+  updateUserProfile,
+};
