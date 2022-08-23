@@ -35,6 +35,7 @@ function ImageClipping({
     textTransform: 'uppercase',
   }));
 
+  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}/${downloadLink}`;
   return (
     <>
       <Box
@@ -80,7 +81,12 @@ function ImageClipping({
         <ButtonGroup>
           <Tooltip title="Download">
             <span>
-              <IconButton disabled={Boolean(!downloadLink)}>
+              <IconButton
+                component="a"
+                href={fileUrl}
+                download={originalFilename}
+                disabled={Boolean(!downloadLink)}
+              >
                 <DownloadOutlinedIcon />
               </IconButton>
             </span>
