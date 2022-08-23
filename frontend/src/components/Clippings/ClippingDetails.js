@@ -1,4 +1,6 @@
 import React, { useContext, useCallback } from 'react';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
@@ -21,6 +23,8 @@ import SocketContext from '../App/SocketContext';
 
 function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const socket = useContext(SocketContext);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
 
   const originList = ['desktop', 'tablet', 'mobile'];
   const iconList = [
@@ -72,7 +76,14 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const Text = React.memo(({ content, isPinned, _id }) => {
     return (
       <>
-        <Typography variant="body1" component="p" gutterBottom>
+        <Typography
+          variant="body1"
+          component="p"
+          gutterBottom
+          overflow="hidden"
+          noWrap={matches}
+          paddingY={2}
+        >
           {content}
         </Typography>
         <Box
@@ -121,7 +132,14 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
             variant="square"
             sx={{ marginRight: '5%' }}
           />
-          <Typography variant="body1" component="p" gutterBottom>
+          <Typography
+            variant="body1"
+            component="p"
+            gutterBottom
+            overflow="hidden"
+            noWrap={matches}
+            paddingY={2}
+          >
             {url}
           </Typography>
         </Box>
@@ -154,7 +172,14 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
 
   return (
     <>
-      <Card sx={{ padding: '15px 25px', width: '100%', marginBottom: '20px' }}>
+      <Card
+        sx={{
+          padding: '15px 25px',
+          width: '100%',
+          marginBottom: '20px',
+          '&:hover': { backgroundColor: 'rgba(217,217,214, 0.5)' },
+        }}
+      >
         {clipping.type === 'Text' && <Text {...clipping} />}
         {clipping.type === 'Link' && <Link {...clipping} />}
         {clipping.type === 'Image' && (

@@ -173,7 +173,7 @@ export default function ClippingsList({
     [dispatch, setSocketError, socket, origin],
   );
 
-  const placeholderClippings = Array.from({ length: 5 }, (v, i) => i).map(
+  const placeholderClippings = Array.from({ length: 8 }, (v, i) => i).map(
     (i) => {
       return (
         <Skeleton

@@ -61,7 +61,7 @@ function ActionButtonsBar({
       }}
     >
       <ButtonGroup
-        sx={{ flex: '1 1 70%', display: 'flex', columnGap: '15px' }}
+        sx={{ flex: '1 1 70%', display: 'flex', columnGap: '20px' }}
         component="div"
       >
         <Box sx={{ position: 'relative' }}>

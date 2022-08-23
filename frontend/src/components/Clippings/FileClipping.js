@@ -45,7 +45,12 @@ function FileClipping({
           {fileIcon}
         </Box>
         <Box>
-          <Typography variant="subtitle1" component="p">
+          <Typography
+            component="p"
+            gutterBottom
+            variant="subtitle1"
+            fontWeight="bold"
+          >
             {originalFilename}
           </Typography>
           <Typography variant="subtitle1" component="p">
