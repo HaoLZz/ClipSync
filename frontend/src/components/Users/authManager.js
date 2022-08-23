@@ -30,8 +30,16 @@ class AuthManager {
       return { userInfo, error };
     }
   }
-  signout() {
-    this._isAuthenticated = false;
+  async signout() {
+    try {
+      const logout = await apiRequest('api/users/logout', 'GET');
+      if (logout) {
+        this._isAuthenticated = false;
+        console.log('logout successful', logout);
+      }
+    } catch (err) {
+      console.error('logout failed', err);
+    }
   }
   getAuthStatus() {
     return this._isAuthenticated;
