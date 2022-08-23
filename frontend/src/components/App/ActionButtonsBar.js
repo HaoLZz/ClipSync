@@ -1,7 +1,6 @@
 import React from 'react';
 import { keyframes } from '@emotion/react';
 import { green } from '@mui/material/colors';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import IconButton from '@mui/material/IconButton';
 import ImageIcon from '@mui/icons-material/Image';
 import SyncIcon from '@mui/icons-material/Sync';
@@ -47,95 +46,96 @@ function ActionButtonsBar({
 
   return (
     <Box
+      component="div"
       aria-label="action buttons bar"
       sx={{
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns:
+          'max-content  max-content max-content 1fr max-content',
+        gridTemplateRows: 'auto',
         marginBottom: 2,
         position: 'sticky',
         top: '50px',
         zIndex: '1200',
-        backgroundColor: 'rgba(211, 211, 211, 0.4)',
+        backgroundColor: 'rgba(211, 211, 211, 0.8)',
         borderRadius: '10px',
         paddingY: '12px',
         paddingX: '20px',
       }}
     >
-      <ButtonGroup
-        sx={{ flex: '1 1 70%', display: 'flex', columnGap: '20px' }}
-        component="div"
-      >
-        <Box sx={{ position: 'relative' }}>
-          <Tooltip title="Upload Photo" placement="top">
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="label"
-              sx={{
-                animation: `${bounce} 1s ease 2 running`,
-                '&:hover': {
-                  animationPlayState: 'paused',
-                  background: 'rgba(173, 216, 230, 0.5)',
-                },
-              }}
-            >
-              <input
-                hidden
-                accept="image/*"
-                type="file"
-                onChange={handleImageUpload}
-              />
-              <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-            </IconButton>
-          </Tooltip>
-          {isImageUploading && (
-            <CircularProgress
-              size={32}
-              sx={{
-                color: green[500],
-                position: 'absolute',
-                top: 3,
-                left: 3,
-                zIndex: 1,
-              }}
+      <Box sx={{ position: 'relative', gridColumn: '1 / 2' }}>
+        <Tooltip title="Upload Photo" placement="top" arrow>
+          <IconButton
+            color="primary"
+            aria-label="upload picture"
+            component="label"
+            sx={{
+              animation: `${bounce} 1s ease 2 running`,
+              '&:hover': {
+                animationPlayState: 'paused',
+                background: 'rgba(173, 216, 230, 0.5)',
+              },
+            }}
+          >
+            <input
+              hidden
+              accept="image/*"
+              type="file"
+              onChange={handleImageUpload}
             />
-          )}
-        </Box>
-        <Box sx={{ position: 'relative' }}>
-          <Tooltip title="Upload File" placement="top">
-            <IconButton
-              color="primary"
-              aria-label="upload file"
-              component="label"
-              sx={{
-                '&:hover': {
-                  background: 'rgba(173, 216, 230, 0.5)',
-                },
-              }}
-              onClick={() => console.log('file upload button')}
-            >
-              <input
-                hidden
-                accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
-                type="file"
-                onChange={handleFileUpload}
-              />
-              <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
-            </IconButton>
-          </Tooltip>
-          {isFileUploading && (
-            <CircularProgress
-              size={32}
-              sx={{
-                color: green[500],
-                position: 'absolute',
-                top: 3,
-                left: 3,
-                zIndex: 1,
-              }}
+            <ImageIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+          </IconButton>
+        </Tooltip>
+        {isImageUploading && (
+          <CircularProgress
+            size={32}
+            sx={{
+              color: green[500],
+              position: 'absolute',
+              top: 3,
+              left: 3,
+              zIndex: 1,
+            }}
+          />
+        )}
+      </Box>
+      <Box sx={{ position: 'relative', gridColumn: '2 / 3' }}>
+        <Tooltip title="Upload File" placement="top" arrow>
+          <IconButton
+            color="primary"
+            aria-label="upload file"
+            component="label"
+            sx={{
+              '&:hover': {
+                background: 'rgba(173, 216, 230, 0.5)',
+              },
+            }}
+            onClick={() => console.log('file upload button')}
+          >
+            <input
+              hidden
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.ppt,.pptx"
+              type="file"
+              onChange={handleFileUpload}
             />
-          )}
-        </Box>
-        <Tooltip title="Clear All" placement="top">
+            <FileUploadIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
+          </IconButton>
+        </Tooltip>
+        {isFileUploading && (
+          <CircularProgress
+            size={32}
+            sx={{
+              color: green[500],
+              position: 'absolute',
+              top: 3,
+              left: 3,
+              zIndex: 1,
+            }}
+          />
+        )}
+      </Box>
+      <Box sx={{ gridColumn: '3 / 4' }}>
+        <Tooltip title="Clear All" placement="top" arrow>
           <IconButton
             color="warning"
             aria-label="clear all"
@@ -144,10 +144,9 @@ function ActionButtonsBar({
             <ClearIcon sx={{ fontSize: { xs: '18px', sm: '24px' } }} />
           </IconButton>
         </Tooltip>
-      </ButtonGroup>
-      <Box
-        sx={{ flex: '1 1 30%', display: 'flex', flexDirection: 'row-reverse' }}
-      >
+      </Box>
+      <Box sx={{ gridColumn: '4 / 5' }} />
+      <Box sx={{ gridColumn: '5 / 6' }}>
         <Tooltip title="Sync Clip" placement="top">
           <IconButton
             color="secondary"
