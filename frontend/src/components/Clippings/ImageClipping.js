@@ -1,5 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
+import { alpha, styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -9,7 +10,6 @@ import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
-import Skeleton from '@mui/material/Skeleton';
 import AsyncImage from '../UI/AsyncImage';
 
 function ImageClipping({
@@ -25,13 +25,15 @@ function ImageClipping({
   togglePinned,
   handleDelete,
 }) {
-  let imageSkeltonHeight = null;
-  if (resolution) {
-    const ratio = Number(resolution.trim().split('X')[0]) / 200;
-    imageSkeltonHeight = Math.ceil(
-      Number(resolution.trim().split('X')[1]) / ratio,
-    );
-  }
+  const MetaText = styled(Typography)(({ theme }) => ({
+    display: 'inline-block',
+    padding: `${theme.spacing(0.2)} ${theme.spacing(1)}`,
+    marginRight: theme.spacing(0.8),
+    color: theme.palette.info.contrastText,
+    backgroundColor: `${alpha(theme.palette.info.main, 0.6)}`,
+    borderRadius: theme.shape.borderRadius,
+    textTransform: 'uppercase',
+  }));
 
   return (
     <>
@@ -40,48 +42,34 @@ function ImageClipping({
         sx={{
           marginBottom: '15px',
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: { xs: 'column-reverse', sm: 'row' },
         }}
       >
-        {thumbnail ? (
-          <Box
-            component="div"
-            sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
-          >
-            <AsyncImage
-              src={thumbnail}
-              alt="image thumbnail"
-              imageSkeltonHeight={imageSkeltonHeight}
-              imageSkeltonWidth={200}
-            />
-          </Box>
-        ) : (
-          <Skeleton
-            variant="rounded"
-            width={210}
-            height={118}
-            animation="wave"
-            sx={{ maxWidth: { xs: '60px', sm: '100%' }, marginRight: '5%' }}
+        <Box component="div" sx={{ maxWidth: '200px', marginRight: '5%' }}>
+          <AsyncImage
+            src={thumbnail}
+            alt="image thumbnail"
+            imageSkeltonWidth={200}
           />
-        )}
+        </Box>
+
         <Box>
           <Typography
             variant="subtitle1"
             component="p"
             gutterBottom
-            fontWeight="bold"
+            fontWeight="700"
           >
             {originalFilename}
           </Typography>
-          <Typography variant="subtitle1" component="p">
-            {resolution}
-          </Typography>
-          <Typography variant="subtitle1" component="p">
-            {format}
-          </Typography>
-          <Typography variant="subtitle1" component="p">
-            {size}
-          </Typography>
+          <Box
+            sx={{ display: { xs: 'flex', sm: 'block' }, marginBottom: '10px' }}
+            columnGap={2}
+          >
+            <MetaText variant="body2">{resolution}</MetaText>
+            <MetaText variant="body2">{format}</MetaText>
+            <MetaText variant="body2">{size}</MetaText>
+          </Box>
         </Box>
       </Box>
       <Box

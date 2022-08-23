@@ -1,4 +1,5 @@
 import React from 'react';
+import { alpha, styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -31,6 +32,16 @@ function FileClipping({
   const fileIcon = fileIcons[format];
   const fileUrl = `${process.env.REACT_APP_HTTPS_URL}/${downloadLink}`;
 
+  const MetaText = styled(Typography)(({ theme }) => ({
+    display: 'inline-block',
+    padding: `${theme.spacing(0.2)} ${theme.spacing(1)}`,
+    marginRight: theme.spacing(0.8),
+    color: theme.palette.info.contrastText,
+    backgroundColor: `${alpha(theme.palette.info.main, 0.6)}`,
+    borderRadius: theme.shape.borderRadius,
+    textTransform: 'uppercase',
+  }));
+
   return (
     <>
       <Box
@@ -53,12 +64,12 @@ function FileClipping({
           >
             {originalFilename}
           </Typography>
-          <Typography variant="subtitle1" component="p">
+          <MetaText variant="body2" component="p">
             {format}
-          </Typography>
-          <Typography variant="subtitle1" component="p">
+          </MetaText>
+          <MetaText variant="body2" component="p">
             {size}
-          </Typography>
+          </MetaText>
         </Box>
       </Box>
       <Box

@@ -1,10 +1,12 @@
+/** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
+import { css } from '@emotion/react';
 import Skeleton from '@mui/material/Skeleton';
 
 function AsyncImage({
   src,
   alt,
-  imageSkeltonHeight,
+  imageSkeltonHeight = '200px',
   imageSkeltonWidth,
   ...props
 }) {
@@ -24,7 +26,17 @@ function AsyncImage({
     }
   }, [src]);
   if (loadedSrc === src) {
-    return <img src={src} alt={alt} {...props} width="100%" />;
+    return (
+      <img
+        css={css`
+          border-radius: 10px;
+          width: 100%;
+        `}
+        src={src}
+        alt={alt}
+        {...props}
+      />
+    );
   }
   return (
     <Skeleton
