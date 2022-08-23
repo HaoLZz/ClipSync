@@ -22,7 +22,7 @@ import {
   deleteClipping,
   listClipping,
 } from './controllers/clippingController.js';
-import { socketAuth } from './middleware/authMiddleware.js';
+import { socketAuth, protect } from './middleware/authMiddleware.js';
 import { download } from './middleware/downloadMiddleware.js';
 
 config();
@@ -40,11 +40,16 @@ app.use(cookieParser());
 
 app.use(
   '/download/',
+  protect,
   download,
   express.static(path.join(__dirname, 'tmp/download')),
 );
 
-app.use('/thumbnail/', express.static(path.join(__dirname, 'tmp/thumbnail')));
+app.use(
+  '/thumbnail/',
+  protect,
+  express.static(path.join(__dirname, 'tmp/thumbnail')),
+);
 
 app.get('/', (req, res) => {
   res.send('API is running');
