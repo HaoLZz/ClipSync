@@ -6,8 +6,6 @@ const protect = asyncHandler(async (req, res, next) => {
   const JWT_KEY = process.env.JWT_KEY_NAME || 'jwt';
   const token = req.headers.authorization || req.cookies[JWT_KEY];
 
-  console.log();
-
   if (!token) {
     res.status(401);
     throw new Error('Invalid authorization: token not found');

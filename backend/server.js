@@ -81,7 +81,6 @@ io.on('connection', (socket) => {
   const connectionsPool = io.of('/').sockets;
   const userId = socket.user._id;
 
-  console.log(socket.handshake);
   // join a room under '<userId>'
   socket.join(userId.toString());
 
