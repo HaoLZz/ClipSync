@@ -11,6 +11,7 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Tooltip from '@mui/material/Tooltip';
 import { PdfIcon, DocIcon, TxtIcon } from '../UI/SvgIcons';
+import TimeAgo from '../UI/TimeAgo';
 
 function FileClipping({
   _id,
@@ -22,6 +23,7 @@ function FileClipping({
   originIcon,
   togglePinned,
   handleDelete,
+  createdAt,
 }) {
   const fileIcons = {
     pdf: <PdfIcon sx={{ fontSize: 64 }} />,
@@ -76,7 +78,18 @@ function FileClipping({
         component="div"
         sx={{ display: 'flex', justifyContent: 'space-between' }}
       >
-        <Avatar variant="rounded">{originIcon}</Avatar>
+        <Box display="flex" alignItems="center">
+          <Avatar
+            variant="rounded"
+            sx={{ width: '36px', height: '36px', marginRight: '10px' }}
+          >
+            {originIcon}
+          </Avatar>
+          <TimeAgo
+            timestamp={createdAt}
+            sx={{ fontSize: { xs: '10px', sm: '14px' } }}
+          />
+        </Box>
         <ButtonGroup>
           <Tooltip title="Download">
             <span>

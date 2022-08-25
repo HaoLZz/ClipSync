@@ -18,6 +18,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 import ImageClipping from './ImageClipping';
 import FileClipping from './FileClipping';
+import TimeAgo from '../UI/TimeAgo';
 
 import SocketContext from '../App/SocketContext';
 
@@ -73,7 +74,7 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
     [dispatch, setSocketError, socket],
   );
 
-  const Text = React.memo(({ content, isPinned, _id }) => {
+  const Text = React.memo(({ content, isPinned, _id, createdAt }) => {
     return (
       <>
         <Typography
@@ -90,9 +91,18 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
           component="div"
           sx={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <Avatar variant="rounded" sx={{ width: '36px', height: '36px' }}>
-            {originIcon}
-          </Avatar>
+          <Box display="flex" alignItems="center">
+            <Avatar
+              variant="rounded"
+              sx={{ width: '36px', height: '36px', marginRight: '10px' }}
+            >
+              {originIcon}
+            </Avatar>
+            <TimeAgo
+              timestamp={createdAt}
+              sx={{ fontSize: { xs: '10px', sm: '14px' } }}
+            />
+          </Box>
           <ButtonGroup>
             <Tooltip title="Copy">
               <IconButton>
@@ -115,7 +125,7 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
     );
   });
 
-  const Link = React.memo(({ url, isPinned, thumbnail, _id }) => {
+  const Link = React.memo(({ url, isPinned, thumbnail, _id, createdAt }) => {
     return (
       <>
         <Box
@@ -147,7 +157,18 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
           component="div"
           sx={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <Avatar variant="rounded">{originIcon}</Avatar>
+          <Box display="flex" alignItems="center">
+            <Avatar
+              variant="rounded"
+              sx={{ width: '36px', height: '36px', marginRight: '10px' }}
+            >
+              {originIcon}
+            </Avatar>
+            <TimeAgo
+              timestamp={createdAt}
+              sx={{ fontSize: { xs: '10px', sm: '14px' } }}
+            />
+          </Box>
           <ButtonGroup>
             <Tooltip title="Copy">
               <IconButton>
