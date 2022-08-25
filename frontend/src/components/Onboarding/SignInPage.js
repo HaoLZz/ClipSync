@@ -19,6 +19,8 @@ import withRouter from '../UI/withRouter';
 import { useAuth } from '../Users/AuthContext';
 import { UserSetContext } from '../Users/UserContext';
 
+import { signInFormSchema, validateForm } from '../../utils/validator';
+
 const theme = createTheme();
 
 const LinkRouter = withRouter(Link);
@@ -44,6 +46,13 @@ export default function SignIn() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const result = validateForm({ email, password }, signInFormSchema);
+    if (result.name === 'ValidationError') {
+      console.error('Validation Error', result.details);
+      return;
+    }
+
     const { userInfo, error } = await signin(email, password);
     if (error) {
       console.error(error);

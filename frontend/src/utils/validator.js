@@ -12,6 +12,13 @@ export const signInFormSchema = {
   password: Joi.string().min(5).max(512).label('Password'),
 };
 
+export const contactUsFormSchema = {
+  fullName: Joi.string().required().min(3).max(128).label('Full Name'),
+  email: Joi.string().email().required().label('Email'),
+  subject: Joi.string().required().min(5).max(128).label('Subject'),
+  message: Joi.string().required().min(5).max(512).label('Message'),
+};
+
 export function validateFormField(label, data, schema) {
   const toValidate = {
     [label]: data,

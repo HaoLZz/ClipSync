@@ -16,21 +16,62 @@ import Header from '../UI/Header';
 import Footer from '../UI/Footer';
 import withRouter from '../UI/withRouter';
 import apiRequest from '../../utils/api';
+import {
+  signUpFormSchema,
+  validateFormField,
+  validateForm,
+} from '../../utils/validator';
 
 const theme = createTheme();
 
 const LinkRouter = withRouter(Link);
 
 export default function SignUpPage() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [values, setValues] = useState({
+    email: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({
+    emailError: '',
+    firstNameError: '',
+    lastNameError: '',
+    passwordError: '',
+  });
+
+  const { email, firstName, lastName, password } = values;
+  const { emailError, firstNameError, lastNameError, passwordError } = errors;
+
   const navigate = useNavigate();
+
+  const handleChange = (prop) => (event) => {
+    const result = validateFormField(
+      prop,
+      event.target.value,
+      signUpFormSchema,
+    );
+    if (result.name === 'ValidationError') {
+      setErrors({ ...errors, [`${prop}Error`]: result.details[0].message });
+    } else {
+      setErrors({ ...errors, [`${prop}Error`]: '' });
+    }
+    setValues({ ...values, [prop]: event.target.value });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      // form data validation
+      const result = validateForm(
+        { firstName, lastName, email, password },
+        signUpFormSchema,
+      );
+      if (result.name === 'ValidationError') {
+        console.error('Validation Error', result.details);
+        return;
+      }
+
       const userInfo = await apiRequest('api/users', 'POST', {
         name: `${firstName} ${lastName}`,
         email,
@@ -76,10 +117,12 @@ export default function SignUpPage() {
                   name="firstName"
                   required
                   fullWidth
+                  error={Boolean(firstNameError)}
                   id="firstName"
                   label="First Name"
+                  helperText={firstNameError}
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={handleChange('firstName')}
                   autoFocus
                 />
               </Grid>
@@ -87,11 +130,13 @@ export default function SignUpPage() {
                 <TextField
                   required
                   fullWidth
+                  error={Boolean(lastNameError)}
                   id="lastName"
                   label="Last Name"
                   name="lastName"
+                  helperText={lastNameError}
                   value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  onChange={handleChange('lastName')}
                   autoComplete="family-name"
                 />
               </Grid>
@@ -99,11 +144,13 @@ export default function SignUpPage() {
                 <TextField
                   required
                   fullWidth
+                  error={Boolean(emailError)}
                   id="email"
                   label="Email Address"
                   name="email"
+                  helperText={emailError}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleChange('email')}
                   autoComplete="email"
                 />
               </Grid>
@@ -111,12 +158,14 @@ export default function SignUpPage() {
                 <TextField
                   required
                   fullWidth
+                  error={Boolean(passwordError)}
                   name="password"
                   label="Password"
                   type="password"
                   id="password"
+                  helperText={passwordError}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleChange('password')}
                   autoComplete="new-password"
                 />
               </Grid>
