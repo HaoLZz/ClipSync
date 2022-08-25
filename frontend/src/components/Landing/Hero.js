@@ -1,3 +1,4 @@
+import { keyframes } from '@emotion/react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -7,6 +8,23 @@ import withRouter from '../UI/withRouter';
 const ButtonRouter = withRouter(Button);
 
 export default function Hero() {
+  const bounce = keyframes`
+  from, 20%, 53%, 80%, to {
+    transform: translate3d(0,0,0);
+  }
+
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+
+  90% {
+    transform: translate3d(0,-4px,0);
+  }
+`;
   return (
     <Box
       sx={{
@@ -48,7 +66,14 @@ export default function Hero() {
             variant="contained"
             color="primary"
             linkPath="/sign-up"
-            sx={{ width: '200px', fontSize: '16px' }}
+            sx={{
+              width: '200px',
+              fontSize: '16px',
+              animation: `${bounce} 1s ease 5 running`,
+              '&:hover': {
+                animationPlayState: 'paused',
+              },
+            }}
           >
             Sign Up
           </ButtonRouter>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -74,16 +74,29 @@ export default function Header(props) {
           >
             ClipSync
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item, i) => (
-              <ButtonRouter
-                key={item}
-                linkPath={navUrls[i]}
-                sx={{ color: '#fff' }}
-              >
-                {item}
-              </ButtonRouter>
-            ))}
+          <Box sx={{ display: { xs: 'none', sm: 'flex' }, columnGap: '10px' }}>
+            {navItems.map((item, i) => {
+              const styles =
+                i === 4
+                  ? {
+                      backgroundColor: '#1ba39c',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: 'rgba(236, 240, 241, 0.5)',
+                      },
+                    }
+                  : {
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: 'rgba(236, 240, 241, 0.2)',
+                      },
+                    };
+              return (
+                <ButtonRouter key={item} linkPath={navUrls[i]} sx={styles}>
+                  {item}
+                </ButtonRouter>
+              );
+            })}
           </Box>
         </Toolbar>
       </AppBar>
