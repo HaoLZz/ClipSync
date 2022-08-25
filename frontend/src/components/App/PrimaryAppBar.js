@@ -50,16 +50,12 @@ function PrimaryAppBar(props) {
   const socket = useContext(SocketContext);
 
   const handleLogout = () => {
-    console.log('user log out');
     signout();
     localStorage.clear();
     setUser((user) => {
       return { _id: user._id };
     });
-    socket.close((reason) => {
-      console.log('User logout', reason);
-    });
-
+    socket.close();
     // Upon logout, redirect to home page
     navigate('/sign-in', { replace: true });
   };

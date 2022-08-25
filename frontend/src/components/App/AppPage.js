@@ -34,6 +34,7 @@ export default function AppPage() {
   const { error: permissionError } = usePermissions();
   const [openAlert, setOpenAlert] = useState(true);
   const [openMessage, setOpenMessage] = useState(true);
+  const [openPermissionMessage, setOpenPermissionMessage] = useState(true);
 
   const [latestText, setLatestText] = useState('');
 
@@ -56,6 +57,7 @@ export default function AppPage() {
 
     socket.on('connect', () => {
       console.log('connected to server', socket.id);
+      setOpenMessage(false);
       setIsConnected(true);
       socket.emit('clipping:list', user._id, (res) => {
         if (res.status === 'successful') {
@@ -68,7 +70,12 @@ export default function AppPage() {
       });
     });
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', (reason) => {
+      console.log(reason);
+      if (reason === 'io server disconnect') {
+        // the disconnection was initiated by the server,reconnect manually
+        socket.connect();
+      }
       setIsConnected(false);
     });
 
@@ -86,6 +93,7 @@ export default function AppPage() {
     return () => {
       socket.removeAllListeners();
       socket.offAny();
+      console.log('app page dismounted');
     };
   }, [user._id, isConnected, user.token]);
 
@@ -101,11 +109,11 @@ export default function AppPage() {
         )}
         <PrimaryAppBar />
         {permissionError && (
-          <Collapse in={openMessage}>
+          <Collapse in={openPermissionMessage}>
             <Message
               severity="error"
               title="Clipboard Permissions Required"
-              handleClose={() => setOpenMessage(false)}
+              handleClose={() => setOpenPermissionMessage(false)}
             >{`${permissionError.name}: ${permissionError.message}`}</Message>
           </Collapse>
         )}
@@ -115,7 +123,9 @@ export default function AppPage() {
               severity="error"
               action={
                 <Button
-                  onClick={() => setOpenMessage(false)}
+                  onClick={() => {
+                    socket.connect();
+                  }}
                   color="inherit"
                   size="small"
                 >

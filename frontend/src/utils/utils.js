@@ -99,7 +99,6 @@ export function getOrigin(useragent) {
 
   if (!useragent.isChrome) {
     console.error('Browser is not Chrome');
-    return;
   }
 
   const origin = useragent.isDesktop
