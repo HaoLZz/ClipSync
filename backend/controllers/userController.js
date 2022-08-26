@@ -1,6 +1,12 @@
-import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import User from '../models/userModel.js';
+import Clipping from '../models/clippingModel.js';
 import generateToken from '../utils/generateToken.js';
+import sampleClippings from '../data/sampleClippings.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // @desc  Auth user and obtain token
 // @route POST /api/users/login
@@ -75,6 +81,17 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    const clippingsToCreate = sampleClippings.map((clipping) => {
+      return { ...clipping, user: user._id };
+    });
+
+    const newUserClippings = await Clipping.insertMany(clippingsToCreate);
+
+    if (!newUserClippings) {
+      res.status(500);
+      throw new Error('User sample clippings initialization failed');
+    }
+
     res.status(201).json({
       _id: user._id,
       name: user.name,
