@@ -5,6 +5,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import ClippingDetails from './ClippingDetails';
 import ActionButtonsBar from '../App/ActionButtonsBar';
+import SnackbarMessage from '../UI/SnackbarMessage';
 import { getClipboardText } from '../../utils/clipboard';
 import {
   validURL,
@@ -36,6 +37,10 @@ export default function ClippingsList({
   const { origin } = getOrigin(user.useragent) || {};
 
   // const [latestImage, setLatestImage] = useState(null);
+
+  const [alert, setAlert] = useState({ severity: '', text: '' });
+  const [open, setOpen] = useState(false);
+  const { severity, text } = alert;
 
   const handleSync = useCallback(async () => {
     const text = await getClipboardText();
@@ -106,11 +111,21 @@ export default function ClippingsList({
         if (res.status === 'successful') {
           console.log('image upload successful');
           setIsImageUploading(false);
+          setOpen(true);
+          setAlert({
+            text: 'Image uploaded',
+            severity: 'success',
+          });
           dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
         } else {
           console.error(res.status, res.data);
           setIsImageUploading(false);
           setSocketError(res.data);
+          setOpen(true);
+          setAlert({
+            text: 'Image upload failed',
+            severity: 'error',
+          });
         }
       };
 
@@ -155,12 +170,22 @@ export default function ClippingsList({
       const callback = (res) => {
         if (res.status === 'successful') {
           console.log('file upload successful');
+          setOpen(true);
+          setAlert({
+            text: 'File uploaded',
+            severity: 'success',
+          });
           setIsFileUploading(false);
           dispatch({ type: 'UPDATE_CLIPPING', payload: res.data });
         } else {
           console.error(res.status, res.data);
           setIsFileUploading(false);
           setSocketError(res.data);
+          setOpen(true);
+          setAlert({
+            text: 'File upload failed',
+            severity: 'error',
+          });
         }
       };
 
@@ -220,6 +245,13 @@ export default function ClippingsList({
             ))}
           </Box>
         )}
+        <SnackbarMessage
+          open={open}
+          setOpen={setOpen}
+          text={text}
+          severity={severity}
+          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        />
       </Container>
     </>
   );
