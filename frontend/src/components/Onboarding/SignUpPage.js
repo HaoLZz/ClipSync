@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
+import SnackbarMessage from '../UI/SnackbarMessage';
 import withRouter from '../UI/withRouter';
 import apiRequest from '../../utils/api';
 import {
@@ -43,6 +44,10 @@ export default function SignUpPage() {
   const { email, firstName, lastName, password } = values;
   const { emailError, firstNameError, lastNameError, passwordError } = errors;
 
+  const [alert, setAlert] = useState({ severity: '', text: '' });
+  const [open, setOpen] = useState(false);
+  const { severity, text } = alert;
+
   const navigate = useNavigate();
 
   const handleChange = (prop) => (event) => {
@@ -69,6 +74,11 @@ export default function SignUpPage() {
       );
       if (result.name === 'ValidationError') {
         console.error('Validation Error', result.details);
+        setOpen(true);
+        setAlert({
+          text: 'Form data invalid. Please edit your information!',
+          severity: 'warning',
+        });
         return;
       }
 
@@ -78,11 +88,21 @@ export default function SignUpPage() {
         password,
       });
       if (userInfo && userInfo._id) {
+        setOpen(true);
+        setAlert({
+          text: 'Sign up successful. Now redirecting to sign-in page',
+          severity: 'success',
+        });
         // upon successful registration, redirect to signin page
-        navigate('/sign-in', { replace: true });
+        setTimeout(() => navigate('/sign-in', { replace: true }), 3000);
       }
     } catch (err) {
       console.error(err);
+      setOpen(true);
+      setAlert({
+        text: 'Sign up failed.Please try again',
+        severity: 'error',
+      });
     }
   };
 
@@ -196,6 +216,13 @@ export default function SignUpPage() {
           </Box>
         </Box>
         <Footer sx={{ mt: 5 }} />
+        <SnackbarMessage
+          open={open}
+          setOpen={setOpen}
+          text={text}
+          severity={severity}
+          anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+        />
       </Container>
     </ThemeProvider>
   );

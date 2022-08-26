@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import SnackbarMessage from '../UI/SnackbarMessage';
 import {
   contactUsFormSchema,
   validateFormField,
@@ -10,10 +11,6 @@ import {
 } from '../../utils/validator';
 
 export default function ContactForm() {
-  // const [email, setEmail] = useState('');
-  // const [fullName, setFullName] = useState('');
-  // const [subject, setSubject] = useState('');
-  // const [message, setMessage] = useState('');
   const [values, setValues] = useState({
     email: '',
     fullName: '',
@@ -28,7 +25,10 @@ export default function ContactForm() {
   });
   const { email, fullName, subject, message } = values;
   const { emailError, fullNameError, subjectError, messageError } = errors;
-  const [error, setError] = useState('');
+
+  const [alert, setAlert] = useState({ severity: '', text: '' });
+  const [open, setOpen] = useState(false);
+  const { severity, text } = alert;
 
   const handleChange = (prop) => (event) => {
     const result = validateFormField(
@@ -53,8 +53,18 @@ export default function ContactForm() {
     );
     if (result.name === 'ValidationError') {
       console.error('Validation Error', result.details);
+      setOpen(true);
+      setAlert({
+        text: 'Form data invalid. Please edit your content!',
+        severity: 'warning',
+      });
       return;
     }
+    setOpen(true);
+    setAlert({
+      text: 'Your message has been submitted',
+      severity: 'success',
+    });
     console.log({ email, fullName, subject, message });
     resetForm();
   };
@@ -74,105 +84,114 @@ export default function ContactForm() {
     });
   };
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        padding: '10px',
-        maxWidth: '700px',
-        margin: '30px auto',
-      }}
-    >
-      <Typography variant="h4" textAlign="center">
-        Contact Us
-      </Typography>
+    <>
       <Box
-        component="form"
-        autoComplete="off"
         sx={{
-          marginTop: '30px',
+          flexGrow: 1,
+          padding: '10px',
+          maxWidth: '700px',
+          margin: '30px auto',
         }}
       >
-        <TextField
-          label="Full Name"
-          required
-          id="full-name"
-          variant="outlined"
-          fullWidth
-          error={Boolean(fullNameError)}
-          helperText={fullNameError}
+        <Typography variant="h4" textAlign="center">
+          Contact Us
+        </Typography>
+        <Box
+          component="form"
+          autoComplete="off"
           sx={{
-            marginBottom: '20px',
+            marginTop: '30px',
           }}
-          value={fullName}
-          onChange={handleChange('fullName')}
-        />
-
-        <TextField
-          label="Email"
-          error={Boolean(emailError)}
-          required
-          id="email"
-          variant="outlined"
-          helperText={emailError}
-          fullWidth
-          sx={{
-            marginBottom: '20px',
-          }}
-          value={email}
-          onChange={handleChange('email')}
-        />
-
-        <TextField
-          label="Subject"
-          required
-          id="subject"
-          variant="outlined"
-          fullWidth
-          error={Boolean(subjectError)}
-          helperText={subjectError}
-          sx={{
-            marginBottom: '20px',
-          }}
-          value={subject}
-          onChange={handleChange('subject')}
-        />
-
-        <TextField
-          multiline
-          id="message"
-          aria-label="minimum height"
-          minRows={6}
-          placeholder="Enter a message"
-          spellCheck
-          fullWidth
-          error={Boolean(messageError)}
-          helperText={messageError}
-          sx={{
-            marginBottom: '20px',
-            fontSize: '16px',
-          }}
-          value={message}
-          onChange={handleChange('message')}
-        />
-
-        <Button
-          variant="contained"
-          type="submit"
-          color="primary"
-          sx={{ width: '200px', fontSize: '16px', marginRight: '10px' }}
-          onClick={submitForm}
         >
-          Submit
-        </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          sx={{ width: '200px', fontSize: '16px' }}
-          onClick={resetForm}
-        >
-          Reset
-        </Button>
+          <TextField
+            label="Full Name"
+            required
+            id="full-name"
+            variant="outlined"
+            fullWidth
+            error={Boolean(fullNameError)}
+            helperText={fullNameError}
+            sx={{
+              marginBottom: '20px',
+            }}
+            value={fullName}
+            onChange={handleChange('fullName')}
+          />
+
+          <TextField
+            label="Email"
+            error={Boolean(emailError)}
+            required
+            id="email"
+            variant="outlined"
+            helperText={emailError}
+            fullWidth
+            sx={{
+              marginBottom: '20px',
+            }}
+            value={email}
+            onChange={handleChange('email')}
+          />
+
+          <TextField
+            label="Subject"
+            required
+            id="subject"
+            variant="outlined"
+            fullWidth
+            error={Boolean(subjectError)}
+            helperText={subjectError}
+            sx={{
+              marginBottom: '20px',
+            }}
+            value={subject}
+            onChange={handleChange('subject')}
+          />
+
+          <TextField
+            multiline
+            id="message"
+            aria-label="minimum height"
+            minRows={6}
+            placeholder="Enter a message"
+            spellCheck
+            fullWidth
+            error={Boolean(messageError)}
+            helperText={messageError}
+            sx={{
+              marginBottom: '20px',
+              fontSize: '16px',
+            }}
+            value={message}
+            onChange={handleChange('message')}
+          />
+
+          <Button
+            variant="contained"
+            type="submit"
+            color="primary"
+            sx={{ width: '200px', fontSize: '16px', marginRight: '10px' }}
+            onClick={submitForm}
+          >
+            Submit
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ width: '200px', fontSize: '16px' }}
+            onClick={resetForm}
+          >
+            Reset
+          </Button>
+        </Box>
       </Box>
-    </Box>
+      <SnackbarMessage
+        open={open}
+        setOpen={setOpen}
+        text={text}
+        severity={severity}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+      />
+    </>
   );
 }

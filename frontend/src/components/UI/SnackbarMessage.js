@@ -11,6 +11,7 @@ export default function SnackbarMessage({
   setOpen = (f) => f,
   text = 'A Warning Message',
   severity = 'warning',
+  anchorOrigin,
   ...props
 }) {
   const handleClose = (event, reason) => {
@@ -22,7 +23,12 @@ export default function SnackbarMessage({
   };
 
   return (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      anchorOrigin={anchorOrigin}
+    >
       <Alert
         onClose={handleClose}
         severity={severity}

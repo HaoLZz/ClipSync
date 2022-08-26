@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Header from '../UI/Header';
 import Footer from '../UI/Footer';
+import SnackbarMessage from '../UI/SnackbarMessage';
 import withRouter from '../UI/withRouter';
 import { useAuth } from '../Users/AuthContext';
 import { UserSetContext } from '../Users/UserContext';
@@ -28,6 +29,10 @@ const LinkRouter = withRouter(Link);
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [alert, setAlert] = useState({ severity: '', text: '' });
+  const [open, setOpen] = useState(false);
+  const { severity, text } = alert;
 
   const { getAuthStatus, signin } = useAuth();
   const setUser = useContext(UserSetContext);
@@ -50,20 +55,35 @@ export default function SignIn() {
     const result = validateForm({ email, password }, signInFormSchema);
     if (result.name === 'ValidationError') {
       console.error('Validation Error', result.details);
+      setOpen(true);
+      setAlert({
+        text: 'Form data invalid. Please edit your content!',
+        severity: 'warning',
+      });
       return;
     }
 
     const { userInfo, error } = await signin(email, password);
     if (error) {
       console.error(error);
+      setOpen(true);
+      setAlert({
+        text: 'Invalid email or password.Please try again',
+        severity: 'error',
+      });
       return;
     }
 
     if (getAuthStatus() && userInfo) {
       setUser(userInfo);
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      setOpen(true);
+      setAlert({
+        text: 'Sign in successful. Now redirecting to app page',
+        severity: 'success',
+      });
       // redirect uesrs to main app after login
-      navigate('/app', { replace: true });
+      setTimeout(() => navigate('/app', { replace: true }), 3000);
     }
   };
 
@@ -142,6 +162,13 @@ export default function SignIn() {
           </Box>
         </Box>
         <Footer sx={{ mt: 8, mb: 4 }} />
+        <SnackbarMessage
+          open={open}
+          setOpen={setOpen}
+          text={text}
+          severity={severity}
+          anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+        />
       </Container>
     </ThemeProvider>
   );
