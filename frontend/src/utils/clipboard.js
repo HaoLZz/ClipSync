@@ -22,3 +22,13 @@ export async function getClipboardContents() {
     console.log('No png image', e);
   }
 }
+
+export async function writeTextClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    console.log('text written to clipboard');
+  } catch (err) {
+    console.error('Failed to writeText: ', err);
+    return err;
+  }
+}

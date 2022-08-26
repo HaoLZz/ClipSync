@@ -21,6 +21,7 @@ import FileClipping from './FileClipping';
 import TimeAgo from '../UI/TimeAgo';
 
 import SocketContext from '../App/SocketContext';
+import { writeTextClipboard } from '../../utils/clipboard';
 
 function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const socket = useContext(SocketContext);
@@ -36,6 +37,10 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
   const index = originList.findIndex((origin) => origin === clipping.origin);
 
   const originIcon = iconList[index];
+
+  const handleCopy = useCallback((text) => {
+    writeTextClipboard(text);
+  }, []);
 
   const togglePinned = useCallback(
     (clippingId, isPinned) => {
@@ -105,7 +110,7 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
           </Box>
           <ButtonGroup>
             <Tooltip title="Copy">
-              <IconButton>
+              <IconButton onClick={() => handleCopy(content)}>
                 <ContentCopyOutlinedIcon />
               </IconButton>
             </Tooltip>
@@ -171,7 +176,7 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
           </Box>
           <ButtonGroup>
             <Tooltip title="Copy">
-              <IconButton>
+              <IconButton onClick={() => handleCopy(url)}>
                 <ContentCopyOutlinedIcon />
               </IconButton>
             </Tooltip>
