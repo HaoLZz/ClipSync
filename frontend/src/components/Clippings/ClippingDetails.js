@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import MuiLink from '@mui/material/Link';
 import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
 import TabletMacIcon from '@mui/icons-material/TabletMac';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
@@ -147,16 +148,19 @@ function ClippingDetails({ clipping, dispatch, setSocketError }) {
             variant="square"
             sx={{ marginRight: '5%' }}
           />
-          <Typography
-            variant="body1"
-            component="p"
-            gutterBottom
-            overflow="hidden"
-            noWrap={matches}
-            paddingY={2}
+          <MuiLink
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+            sx={{
+              marginBottom: '15px',
+              padding: '8px,10px',
+              color: theme.palette.common.black,
+            }}
           >
             {url}
-          </Typography>
+          </MuiLink>
         </Box>
         <Box
           component="div"
