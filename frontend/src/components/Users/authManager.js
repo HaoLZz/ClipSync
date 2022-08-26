@@ -17,10 +17,8 @@ class AuthManager {
         email,
         password,
       });
-      console.log(userInfo);
       if (userInfo && userInfo._id && userInfo.token) {
         this._isAuthenticated = true;
-        console.log(this._isAuthenticated);
       }
     } catch (err) {
       error = err;

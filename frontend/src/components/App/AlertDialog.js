@@ -23,8 +23,13 @@ export default function AlertDialog({ open = false, setOpen = (f) => f }) {
         options,
       );
       if (updatedUser) {
-        setUser(updatedUser);
-        localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+        setUser((user) => {
+          return { ...user, ...updatedUser };
+        });
+        localStorage.setItem(
+          'userInfo',
+          JSON.stringify({ ...user, ...updatedUser }),
+        );
       } else {
         throw new Error('Update user grantPermissions failed');
       }
