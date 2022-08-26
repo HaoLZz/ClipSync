@@ -13,6 +13,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import withRouter from './withRouter';
+import { LogoIcon } from './SvgIcons';
 
 const drawerWidth = 240;
 const navItems = ['Home', 'Features', 'Contact Us', 'App', 'Sign in'];
@@ -68,10 +69,13 @@ export default function Header(props) {
             component="div"
             sx={{
               flexGrow: 1,
-              display: { xs: 'none', sm: 'block' },
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: { xs: 'center', sm: 'initial' },
               fontSize: { sm: '1.25rem', md: '1.75rem' },
             }}
           >
+            <LogoIcon sx={{ fontSize: '32px' }} />
             ClipSync
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'flex' }, columnGap: '10px' }}>

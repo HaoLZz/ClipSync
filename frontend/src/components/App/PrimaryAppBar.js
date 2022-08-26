@@ -26,7 +26,7 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import withRouter from '../UI/withRouter';
 import UserAvatar from './UserAvatar';
-
+import { LogoIcon } from '../UI/SvgIcons';
 import { useAuth } from '../Users/AuthContext';
 import { useUser } from '../Users/UserContext';
 import SocketContext from './SocketContext';
@@ -228,8 +228,13 @@ function PrimaryAppBar(props) {
             variant="h6"
             noWrap
             component="div"
-            sx={{ fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } }}
+            sx={{
+              fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
+            <LogoIcon sx={{ fontSize: '32px' }} />
             ClipSync
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
