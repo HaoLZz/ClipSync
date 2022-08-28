@@ -1,5 +1,6 @@
 import express from 'express';
 import https from 'https';
+import http from 'http';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import path from 'path';
@@ -29,11 +30,46 @@ config();
 connectDB();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+console.log(__dirname);
 
 const app = express();
 
 app.use(morgan('dev'));
-app.use(cors());
+
+let server, io;
+if (process.env.NODE_ENV === 'development') {
+  // add development middleware to express
+  app.use(cors());
+  app.get('/', (req, res) => {
+    res.send('API running in development mode');
+  });
+
+  server = https.createServer(
+    {
+      cert: fs.readFileSync(path.join(__dirname, '/.cert/server.crt')),
+      key: fs.readFileSync(path.join(__dirname, '/.cert/server.key')),
+    },
+    app,
+  );
+
+  io = new Server(server, {
+    cors: {
+      origin: 'https://localhost:3000',
+    },
+    maxHttpBufferSize: 1e8, // 100MB
+  });
+} else if (process.env.NODE_ENV === 'production') {
+  // serve react frontend
+  console.log(path.join(__dirname, '../frontend/build'));
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  app.get('/', (req, res) =>
+    res.sendFile(path.join(__dirname, '../frontend/build/index.html')),
+  );
+
+  server = http.createServer(app);
+  io = new Server(server, { maxHttpBufferSize: 1e8 });
+}
+
 app.use(express.json());
 app.use(useragent.express());
 app.use(cookieParser());
@@ -51,29 +87,9 @@ app.use(
   express.static(path.join(__dirname, 'tmp/thumbnail')),
 );
 
-app.get('/', (req, res) => {
-  res.send('API is running');
-});
 app.use('/api/users', userRoutes);
-
 app.use(notFound);
-
 app.use(errorHandler);
-
-const server = https.createServer(
-  {
-    cert: fs.readFileSync(path.join(__dirname, '/.cert/server.crt')),
-    key: fs.readFileSync(path.join(__dirname, '/.cert/server.key')),
-  },
-  app,
-);
-
-const io = new Server(server, {
-  cors: {
-    origin: 'https://localhost:3000',
-  },
-  maxHttpBufferSize: 1e8, // 100MB
-});
 
 io.use(socketAuth);
 
