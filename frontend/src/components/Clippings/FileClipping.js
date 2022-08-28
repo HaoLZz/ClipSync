@@ -32,7 +32,7 @@ function FileClipping({
     txt: <TxtIcon sx={{ fontSize: 64 }} />,
   };
   const fileIcon = fileIcons[format];
-  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}/${downloadLink}`;
+  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}${downloadLink}`;
 
   const MetaText = styled(Typography)(({ theme }) => ({
     display: 'inline-block',

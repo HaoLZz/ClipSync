@@ -14,6 +14,7 @@ import clippingsReducer from '../Clippings/clippingsReducer';
 import SocketContext from './SocketContext';
 
 const URL = process.env.REACT_APP_SOCKET_URL;
+console.log(URL);
 const socket = io(URL, {
   autoConnect: false,
   reconnection: true,
@@ -40,7 +41,8 @@ export default function AppPage() {
 
   useEffect(() => {
     // when in development, add a catch-all listener
-    if (process.env.REACT_APP_ENV_MODE === 'development') {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('running in development mode');
       socket.onAny((event, ...args) => {
         console.log(event, args);
       });
