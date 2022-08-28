@@ -29,7 +29,7 @@ export default function AppPage() {
 
   const [clippings, dispatch] = useReducer(clippingsReducer, []);
 
-  const [user, setUser] = useUser();
+  const [user] = useUser();
 
   const { error: permissionError } = usePermissions();
   const [openAlert, setOpenAlert] = useState(true);
@@ -67,6 +67,13 @@ export default function AppPage() {
           console.error(res.data);
           setSocketError('clipping:list failed');
         }
+      });
+
+      const engine = socket.io.engine;
+
+      engine.on('close', (reason) => {
+        // called when the underlying connection is closed
+        console.log('connect_lost:', reason);
       });
     });
 
