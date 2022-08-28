@@ -37,7 +37,7 @@ function ImageClipping({
     textTransform: 'uppercase',
   }));
 
-  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}/${downloadLink}`;
+  const fileUrl = `${process.env.REACT_APP_HTTPS_URL}${downloadLink}`;
   return (
     <>
       <Box
