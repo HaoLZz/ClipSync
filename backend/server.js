@@ -30,10 +30,27 @@ config();
 connectDB();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
 
 const app = express();
 
+app.use(express.json());
+app.use(useragent.express());
+app.use(cookieParser());
+
+app.use(
+  '/download/',
+  protect,
+  download,
+  express.static(path.join(__dirname, 'tmp/download')),
+);
+
+app.use(
+  '/thumbnail/',
+  protect,
+  express.static(path.join(__dirname, 'tmp/thumbnail')),
+);
+
+app.use('/api/users', userRoutes);
 app.use(morgan('dev'));
 
 let server, io;
@@ -60,9 +77,8 @@ if (process.env.NODE_ENV === 'development') {
   });
 } else if (process.env.NODE_ENV === 'production') {
   // serve react frontend
-  console.log(path.join(__dirname, '../frontend/build'));
   app.use(express.static(path.join(__dirname, '../frontend/build')));
-  app.get('/', (req, res) =>
+  app.get('/**', (req, res) =>
     res.sendFile(path.join(__dirname, '../frontend/build/index.html')),
   );
 
@@ -70,24 +86,6 @@ if (process.env.NODE_ENV === 'development') {
   io = new Server(server, { maxHttpBufferSize: 1e8 });
 }
 
-app.use(express.json());
-app.use(useragent.express());
-app.use(cookieParser());
-
-app.use(
-  '/download/',
-  protect,
-  download,
-  express.static(path.join(__dirname, 'tmp/download')),
-);
-
-app.use(
-  '/thumbnail/',
-  protect,
-  express.static(path.join(__dirname, 'tmp/thumbnail')),
-);
-
-app.use('/api/users', userRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
