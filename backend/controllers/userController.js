@@ -94,41 +94,41 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new Error('User sample clippings initialization failed');
     }
 
-    // const sampleImageClipping = await Clipping.create({
-    //   origin: 'desktop',
-    //   type: 'Image',
-    //   isPinned: false,
-    //   originalFilename: 'Sample_Image.jpg',
-    //   format: 'jpg',
-    //   size: '38.0 kB',
-    //   user: user._id,
-    // });
+    const sampleImageClipping = await Clipping.create({
+      origin: 'desktop',
+      type: 'Image',
+      isPinned: false,
+      originalFilename: 'Sample_Image.jpg',
+      format: 'jpg',
+      size: '38.0 kB',
+      user: user._id,
+    });
 
-    // const filePath = path.join(__dirname, '../data/Sample_Image.jpg');
-    // const filenameToSave = `${sampleImageClipping._id.toString()}.${
-    //   sampleImageClipping.format
-    // }`;
+    const filePath = path.join(__dirname, '../data/Sample_Image.jpg');
+    const filenameToSave = `${sampleImageClipping._id.toString()}.${
+      sampleImageClipping.format
+    }`;
 
-    // console.log(filePath, '\n', filenameToSave);
-    // const fileDownloadPath = path.join(
-    //   __dirname,
-    //   `../tmp/download/${filenameToSave}`,
-    // );
-    // await copyFile(filePath, fileDownloadPath);
+    console.log(filePath, '\n', filenameToSave);
+    const fileDownloadPath = path.join(
+      __dirname,
+      `../tmp/download/${filenameToSave}`,
+    );
+    await copyFile(filePath, fileDownloadPath);
 
-    // const imageFile = await readFile(filePath);
-    // const metadata = await sharp(imageFile).metadata();
-    // const thumbnailFilePath = path.join(
-    //   __dirname,
-    //   `../tmp/thumbnail/thumbnail_${filenameToSave}`,
-    // );
-    // await sharp(imageFile).resize({ width: 200 }).toFile(thumbnailFilePath);
+    const imageFile = await readFile(filePath);
+    const metadata = await sharp(imageFile).metadata();
+    const thumbnailFilePath = path.join(
+      __dirname,
+      `../tmp/thumbnail/thumbnail_${filenameToSave}`,
+    );
+    await sharp(imageFile).resize({ width: 200 }).toFile(thumbnailFilePath);
 
-    // sampleImageClipping.thumbnail = `thumbnail/thumbnail_${filenameToSave}`;
-    // sampleImageClipping.downloadLink = `download/${filenameToSave}`;
-    // sampleImageClipping.resolution = `${metadata.width} X ${metadata.height}`;
+    sampleImageClipping.thumbnail = `thumbnail/thumbnail_${filenameToSave}`;
+    sampleImageClipping.downloadLink = `download/${filenameToSave}`;
+    sampleImageClipping.resolution = `${metadata.width} X ${metadata.height}`;
 
-    // await sampleImageClipping.save();
+    await sampleImageClipping.save();
 
     res.status(201).json({
       _id: user._id,
