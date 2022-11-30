@@ -74,8 +74,8 @@ The backend is divided into four parts: mongoDB database config, data modeling, 
 
 ### Links
 
-- Deployed on [Heroku](https://www.heroku.com/)
-- Live Site: [ClipSync](https://clipsyncapp.herokuapp.com/)
+- Deployed on [Render](https://render.com/)
+- Live Site: [ClipSync](https://clipsync.onrender.com)
 
 ## My process
 
