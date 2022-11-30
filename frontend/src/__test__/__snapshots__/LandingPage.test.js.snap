@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders landing page correctly 1`] = `
+<Router
+  location={
+    Object {
+      "hash": "",
+      "key": "default",
+      "pathname": "/",
+      "search": "",
+      "state": null,
+    }
+  }
+  navigationType="POP"
+  navigator={
+    Object {
+      "back": [Function],
+      "createHref": [Function],
+      "forward": [Function],
+      "go": [Function],
+      "push": [Function],
+      "replace": [Function],
+    }
+  }
+  static={true}
+>
+  <LandingPage />
+</Router>
+`;
